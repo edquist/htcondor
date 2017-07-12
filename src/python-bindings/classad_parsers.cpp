@@ -240,7 +240,7 @@ OldClassAdIterator::next()
         {
             if (m_source_has_next)
             {
-                next_obj = m_source.attr("next")();
+                next_obj = m_source.attr(NEXT_FN)();
             }
             else
             {
