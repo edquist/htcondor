@@ -1,6 +1,8 @@
 #include "python_bindings_common.h"
 #include "old_boost.h"
 
+#include <iostream>
+
 #include <classad/source.h>
 #include <classad/sink.h>
 
@@ -21,12 +23,17 @@ ClassAdWrapper *parseString(const std::string &str)
     classad::ClassAd *result = parser.ParseClassAd(str);
     if (!result)
     {
+        std::cerr << "!result (1)\n";
         PyErr_SetString(PyExc_SyntaxError, "Unable to parse string into a ClassAd.");
         boost::python::throw_error_already_set();
     }
+    std::cerr << "HERE (1)\n";
     ClassAdWrapper * wrapper_result = new ClassAdWrapper();
+    std::cerr << "HERE (2)\n";
     wrapper_result->CopyFrom(*result);
+    std::cerr << "HERE (3)\n";
     delete result;
+    std::cerr << "HERE (4)\n";
     return wrapper_result;
 }
 
@@ -98,7 +105,9 @@ bool isOldAd(boost::python::object source)
     boost::python::extract<std::string> input_extract(source);
     if (input_extract.check())
     {
+        std::cerr << "input_extract.check() OK\n";
         std::string input_str = input_extract();
+        std::cerr << "input_extract() == [" << input_str << "]\n";
         const char * adchar = input_str.c_str();
         while (*adchar)
         {
@@ -143,9 +152,19 @@ boost::shared_ptr<ClassAdWrapper> parseOne(boost::python::object input, ParserTy
     {
         type = isOldAd(input) ? CLASSAD_OLD : CLASSAD_NEW;
     }
+    if (type == CLASSAD_OLD) {
+        std::cerr << "[CLASSAD_OLD]\n";
+    } else if (type == CLASSAD_NEW) {
+        std::cerr << "[CLASSAD_NEW]\n";
+    }
     boost::shared_ptr<ClassAdWrapper> result_ad(new ClassAdWrapper());
     input = parseAds(input, type);
+    std::cerr << "HERE (parseOne) (0)\n";
+    boost::python::eval("print")(input);
     bool input_has_next = py_hasattr(input, NEXT_FN);
+    std::cerr << "HERE (parseOne) (1)\n";
+    std::cerr << "input_has_next = " << input_has_next << "\n";
+
     while (true)
     {
         boost::python::object next_obj;
@@ -153,25 +172,37 @@ boost::shared_ptr<ClassAdWrapper> parseOne(boost::python::object input, ParserTy
         {
             if (input_has_next)
             {
+                std::cerr << "HERE (parseOne) (2)\n";
                 next_obj = input.attr(NEXT_FN)();
+                std::cerr << "HERE (parseOne) (3)\n";
             }
             else if (input.ptr() && input.ptr()->ob_type && input.ptr()->ob_type->tp_iternext)
             {
+                std::cerr << "HERE (parseOne) (4)\n";
                 PyObject *next_obj_ptr = input.ptr()->ob_type->tp_iternext(input.ptr());
-                if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed");}
+                if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed (1)");}
                 next_obj = boost::python::object(boost::python::handle<>(next_obj_ptr));
                 if (PyErr_Occurred()) throw boost::python::error_already_set();
             }
-            else {THROW_EX(ValueError, "Unable to iterate through ads.");}
+            else {
+                std::cerr << "HERE (parseOne) (5)\n";
+                THROW_EX(ValueError, "Unable to iterate through ads.");
+            }
         }
         catch (const boost::python::error_already_set&)
         {
+            std::cerr << "HERE (parseOne) (6)\n";
+            std::cerr << "PyErr_Occurred = " << PyErr_Occurred() << "\n";
             if (PyErr_ExceptionMatches(PyExc_StopIteration))
             {
+                std::cerr << "HERE (parseOne) (7)\n";
                 PyErr_Clear();
                 break;
             }
-            else {boost::python::throw_error_already_set();}
+            else {
+                std::cerr << "HERE (parseOne) (8)\n";
+                boost::python::throw_error_already_set();
+            }
         }
         const ClassAdWrapper &ad = boost::python::extract<ClassAdWrapper>(next_obj);
         result_ad->Update(ad);
@@ -190,7 +221,7 @@ boost::python::object parseNext(boost::python::object source, ParserType type)
     if (source.ptr() && source.ptr()->ob_type && source.ptr()->ob_type->tp_iternext)
     {
         PyObject *next_obj_ptr = source.ptr()->ob_type->tp_iternext(source.ptr());
-        if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed");}
+        if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed (2)");}
         boost::python::object next_obj = boost::python::object(boost::python::handle<>(next_obj_ptr));
         if (PyErr_Occurred()) throw boost::python::error_already_set();
         return next_obj;
@@ -203,8 +234,11 @@ OldClassAdIterator::OldClassAdIterator(boost::python::object source)
     : m_done(false), m_source_has_next(py_hasattr(source, NEXT_FN)),
       m_ad(new ClassAdWrapper()), m_source(source)
 {
+    std::cerr << "HERE (OldClassAdIterator::OldClassAdIterator) (1)\n";
+    std::cerr << "m_source_has_next = " << m_source_has_next << "\n";
     if (!m_source_has_next && !PyIter_Check(m_source.ptr()))
     {
+        std::cerr << "HERE (OldClassAdIterator::OldClassAdIterator) (2)\n";
         THROW_EX(TypeError, "Source object is not iterable")
     }
 }
@@ -212,7 +246,7 @@ OldClassAdIterator::OldClassAdIterator(boost::python::object source)
 boost::shared_ptr<ClassAdWrapper>
 OldClassAdIterator::next()
 {
-    if (m_done) THROW_EX(StopIteration, "All ads processed");
+    if (m_done) THROW_EX(StopIteration, "All ads processed (1)");
 
     bool reset_ptr = py_hasattr(m_source, "tell");
     size_t end_ptr = 0;
@@ -245,9 +279,9 @@ OldClassAdIterator::next()
             else
             {
                 PyObject *next_obj_ptr = m_source.ptr()->ob_type->tp_iternext(m_source.ptr());
-                if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed");}
+                if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed (3)");}
                 next_obj = boost::python::object(boost::python::handle<>(next_obj_ptr));
-		if (PyErr_Occurred()) throw boost::python::error_already_set();
+                if (PyErr_Occurred()) throw boost::python::error_already_set();
             }
         }
         catch (const boost::python::error_already_set&)
@@ -258,7 +292,7 @@ OldClassAdIterator::next()
                 if (m_ad->size() == 0)
                 {
                     PyErr_Clear();
-                    THROW_EX(StopIteration, "All ads processed");
+                    THROW_EX(StopIteration, "All ads processed (2)");
                 }
                 boost::shared_ptr<ClassAdWrapper> result = m_ad;
                 m_ad.reset();
@@ -340,10 +374,19 @@ static
 OldClassAdIterator
 parseOldAds_impl(boost::python::object input)
 {
-    boost::python::object input_iter = (PyString_Check(input.ptr()) || PyUnicode_Check(input.ptr())) ?
+    std::cerr << "HERE (parseOldAds_impl : 1)\n";
+    bool test1 = PyString_Check(input.ptr());
+    bool test2 = PyUnicode_Check(input.ptr());
+    bool test = test1 || test2;
+    std::cerr << "HERE (parseOldAds_impl) test1 = " << test1 << "\n";
+    std::cerr << "HERE (parseOldAds_impl) test2 = " << test2 << "\n";
+    std::cerr << "HERE (parseOldAds_impl) test = " << test << "\n";
+
+    boost::python::object input_iter = test ?
           input.attr("splitlines")().attr("__iter__")()
         : input.attr("__iter__")();
 
+    std::cerr << "HERE (parseOldAds_impl : 2)\n";
     return OldClassAdIterator(input_iter);
 };
 
@@ -354,7 +397,7 @@ ClassAdFileIterator::ClassAdFileIterator(FILE *source)
 boost::shared_ptr<ClassAdWrapper>
 ClassAdFileIterator::next()
 {
-    if (m_done) THROW_EX(StopIteration, "All ads processed");
+    if (m_done) THROW_EX(StopIteration, "All ads processed (3)");
 
     boost::shared_ptr<ClassAdWrapper> result(new ClassAdWrapper());
     if (!m_parser->ParseClassAd(m_source, *result))
@@ -362,7 +405,7 @@ ClassAdFileIterator::next()
         if (feof(m_source))
         {
             m_done = true;
-            THROW_EX(StopIteration, "All ads processed");
+            THROW_EX(StopIteration, "All ads processed (4)");
         }
         else
         {
@@ -379,7 +422,7 @@ ClassAdStringIterator::ClassAdStringIterator(const std::string & source)
 boost::shared_ptr<ClassAdWrapper>
 ClassAdStringIterator::next()
 {
-    if (m_off < 0) THROW_EX(StopIteration, "All ads processed");
+    if (m_off < 0) THROW_EX(StopIteration, "All ads processed (5)");
 
     boost::shared_ptr<ClassAdWrapper> result(new ClassAdWrapper());
     if (!m_parser->ParseClassAd(m_source, *result, m_off))
@@ -387,7 +430,7 @@ ClassAdStringIterator::next()
         if (m_off != static_cast<int>(m_source.size())-1)
         {
             m_off = -1;
-            THROW_EX(StopIteration, "All ads processed");
+            THROW_EX(StopIteration, "All ads processed (6)");
         }
         else
         {
