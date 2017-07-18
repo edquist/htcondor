@@ -246,96 +246,150 @@ OldClassAdIterator::OldClassAdIterator(boost::python::object source)
 boost::shared_ptr<ClassAdWrapper>
 OldClassAdIterator::next()
 {
-    if (m_done) THROW_EX(StopIteration, "All ads processed (1)");
+    std::cerr << "HERE (OldClassAdIterator::next()) (0)\n";
+
+    if (m_done) {
+        THROW_EX(StopIteration, "All ads processed (1)");
+        std::cerr << "HERE (OldClassAdIterator::next()) (1)\n";
+    }
 
     bool reset_ptr = py_hasattr(m_source, "tell");
     size_t end_ptr = 0;
     try
     {
-        if (reset_ptr) { end_ptr = boost::python::extract<size_t>(m_source.attr("tell")()); }
+        if (reset_ptr) {
+            std::cerr << "HERE (OldClassAdIterator::next()) (2)\n";
+            end_ptr = boost::python::extract<size_t>(m_source.attr("tell")());
+        } else {
+            std::cerr << "HERE (OldClassAdIterator::next()) (3)\n";
+        }
     }
     catch (const boost::python::error_already_set&)
     {
+        std::cerr << "HERE (OldClassAdIterator::next()) (4)\n";
         if (PyErr_ExceptionMatches(PyExc_IOError))
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (5)\n";
             PyErr_Clear();
+            std::cerr << "HERE (OldClassAdIterator::next()) (6)\n";
             reset_ptr = false;
         }
         else
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (7)\n";
             throw;
         }
     }
 
     while (true)
     {
+        std::cerr << "HERE (OldClassAdIterator::next()) (8)\n";
         boost::python::object next_obj;
         try
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (9)\n";
             if (m_source_has_next)
             {
+                std::cerr << "HERE (OldClassAdIterator::next()) (10)\n";
                 next_obj = m_source.attr(NEXT_FN)();
+                std::cerr << "HERE (OldClassAdIterator::next()) (11)\n";
             }
             else
             {
+                std::cerr << "HERE (OldClassAdIterator::next()) (12)\n";
                 PyObject *next_obj_ptr = m_source.ptr()->ob_type->tp_iternext(m_source.ptr());
-                if (next_obj_ptr == NULL) {THROW_EX(StopIteration, "All input ads processed (3)");}
+                std::cerr << "HERE (OldClassAdIterator::next()) (13)\n";
+                if (next_obj_ptr == NULL) {
+                    std::cerr << "HERE (OldClassAdIterator::next()) (14)\n";
+                    THROW_EX(StopIteration, "All input ads processed (3)");
+                }
+                std::cerr << "HERE (OldClassAdIterator::next()) (15)\n";
                 next_obj = boost::python::object(boost::python::handle<>(next_obj_ptr));
-                if (PyErr_Occurred()) throw boost::python::error_already_set();
+                std::cerr << "HERE (OldClassAdIterator::next()) (16)\n";
+                if (PyErr_Occurred()) {
+                    std::cerr << "HERE (OldClassAdIterator::next()) (17)\n";
+                    throw boost::python::error_already_set();
+                }
+                std::cerr << "HERE (OldClassAdIterator::next()) (18)\n";
             }
         }
         catch (const boost::python::error_already_set&)
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (19)\n";
             m_done = true;
             if (PyErr_ExceptionMatches(PyExc_StopIteration))
             {
+                std::cerr << "HERE (OldClassAdIterator::next()) (20)\n";
                 if (m_ad->size() == 0)
                 {
+                    std::cerr << "HERE (OldClassAdIterator::next()) (21)\n";
                     PyErr_Clear();
                     THROW_EX(StopIteration, "All ads processed (2)");
                 }
                 boost::shared_ptr<ClassAdWrapper> result = m_ad;
                 m_ad.reset();
+                std::cerr << "HERE (OldClassAdIterator::next()) (22)\n";
                 if (reset_ptr && py_hasattr(m_source, "seek"))
                 {
+                    std::cerr << "HERE (OldClassAdIterator::next()) (23)\n";
                     PyObject *ptype, *pvalue, *ptraceback;
                     PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+                    std::cerr << "HERE (OldClassAdIterator::next()) (24)\n";
                     m_source.attr("seek")(end_ptr);
+                    std::cerr << "HERE (OldClassAdIterator::next()) (25)\n";
                     PyErr_Restore(ptype, pvalue, ptraceback);
+                    std::cerr << "HERE (OldClassAdIterator::next()) (26)\n";
                 }
+                std::cerr << "HERE (OldClassAdIterator::next()) (27)\n";
                 return result;
             }
+            std::cerr << "HERE (OldClassAdIterator::next()) (28)\n";
             boost::python::throw_error_already_set();
+            std::cerr << "HERE (OldClassAdIterator::next()) (29)\n";
         }
         if (reset_ptr)
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (30)\n";
             end_ptr += py_len(next_obj);
         }
         boost::python::object line = next_obj.attr("strip")();
+        std::cerr << "HERE (OldClassAdIterator::next()) (31)\n";
         if (line.attr("startswith")("#"))
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (32)\n";
             continue;
         }
         std::string line_str = boost::python::extract<std::string>(line);
+        std::cerr << "HERE (OldClassAdIterator::next()) (33)\n";
         if (line_str.size() == 0)
         {
-            if (m_ad->size() == 0) { continue; }
+            std::cerr << "HERE (OldClassAdIterator::next()) (34)\n";
+            if (m_ad->size() == 0) {
+                std::cerr << "HERE (OldClassAdIterator::next()) (35)\n";
+                continue;
+            }
             boost::shared_ptr<ClassAdWrapper> result = m_ad;
             m_ad.reset(new ClassAdWrapper());
+            std::cerr << "HERE (OldClassAdIterator::next()) (36)\n";
             if (reset_ptr && py_hasattr(m_source, "seek"))
             {
+                std::cerr << "HERE (OldClassAdIterator::next()) (37)\n";
                 m_source.attr("seek")(end_ptr);
             }
+            std::cerr << "HERE (OldClassAdIterator::next()) (38)\n";
             return result;
         }
         const char * adchar = line_str.c_str();
         bool invalid = false;
         while (*adchar)
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (39)\n";
             if (!isspace(*adchar))
             {
+                std::cerr << "HERE (OldClassAdIterator::next()) (40)\n";
                 if (!isalpha(*adchar) && (*adchar != '_') && (*adchar != '\''))
                 {
+                    std::cerr << "HERE (OldClassAdIterator::next()) (41)\n";
                     invalid = true;
                     break;
                 }
@@ -343,9 +397,13 @@ OldClassAdIterator::next()
             }
             adchar++;
         }
-        if (invalid) {continue;}
+        if (invalid) {
+            std::cerr << "HERE (OldClassAdIterator::next()) (42)\n";
+            continue;
+        }
 
         size_t pos = line_str.find('=');
+        std::cerr << "HERE (OldClassAdIterator::next()) (43)\n";
 
         // strip whitespace before the attribute and and around the =
         size_t npos = pos;
@@ -357,11 +415,14 @@ OldClassAdIterator::next()
         size_t vpos = pos+1;
         while (line_str[vpos] == ' ') { vpos++; }
         std::string szValue = line_str.substr(vpos);
+        std::cerr << "HERE (OldClassAdIterator::next()) (44)\n";
         if (!m_ad->InsertViaCache(name, szValue))
         {
+            std::cerr << "HERE (OldClassAdIterator::next()) (45)\n";
             THROW_EX(ValueError, line_str.c_str());
         }
     }
+    std::cerr << "HERE (OldClassAdIterator::next()) (46)\n";
 }
 
 OldClassAdIterator parseOldAds(boost::python::object input)
