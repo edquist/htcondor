@@ -352,6 +352,7 @@ OldClassAdIterator::next()
                     std::cerr << "HERE (OldClassAdIterator::next()) (26)\n";
                 }
                 std::cerr << "HERE (OldClassAdIterator::next()) (27)\n";
+                PyErr_Clear();
                 return result;
             }
             std::cerr << "HERE (OldClassAdIterator::next()) (28)\n";
