@@ -127,6 +127,7 @@ bool isOldAd(boost::python::object source)
     {
         if (PyErr_ExceptionMatches(PyExc_IOError))
         {
+            std::cerr << "HERE (isOldAd) (1) : PyErr_Clear()\n";
             PyErr_Clear();
             THROW_EX(ValueError, "Stream cannot rewind; must explicitly chose either old or new ClassAd parser.  Auto-detection not available.");
         }
@@ -195,7 +196,7 @@ boost::shared_ptr<ClassAdWrapper> parseOne(boost::python::object input, ParserTy
             std::cerr << "PyErr_Occurred = " << PyErr_Occurred() << "\n";
             if (PyErr_ExceptionMatches(PyExc_StopIteration))
             {
-                std::cerr << "HERE (parseOne) (7)\n";
+                std::cerr << "HERE (parseOne) (7) : PyErr_Clear()\n";
                 PyErr_Clear();
                 break;
             }
@@ -269,7 +270,7 @@ OldClassAdIterator::next()
         std::cerr << "HERE (OldClassAdIterator::next()) (4)\n";
         if (PyErr_ExceptionMatches(PyExc_IOError))
         {
-            std::cerr << "HERE (OldClassAdIterator::next()) (5)\n";
+            std::cerr << "HERE (OldClassAdIterator::next()) (5) : PyErr_Clear()\n";
             PyErr_Clear();
             std::cerr << "HERE (OldClassAdIterator::next()) (6)\n";
             reset_ptr = false;
@@ -322,7 +323,7 @@ OldClassAdIterator::next()
                 std::cerr << "HERE (OldClassAdIterator::next()) (20)\n";
                 if (m_ad->size() == 0)
                 {
-                    std::cerr << "HERE (OldClassAdIterator::next()) (21)\n";
+                    std::cerr << "HERE (OldClassAdIterator::next()) (21) : PyErr_Clear()\n";
                     PyErr_Clear();
                     THROW_EX(StopIteration, "All ads processed (2)");
                 }
@@ -546,6 +547,7 @@ obj_iternext(PyObject *self)
         catch (...)
         {
             if (PyErr_ExceptionMatches(PyExc_StopIteration)) {
+                std::cerr << "HERE (obj_iternext) (1) : PyErr_Clear()\n";
                 PyErr_Clear();
                 return NULL;
             }

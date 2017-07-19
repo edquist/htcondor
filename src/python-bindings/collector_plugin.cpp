@@ -11,6 +11,8 @@
 
 #include <sstream>
 
+#include <iostream>
+
 #include "old_boost.h"
 
 #include "classad/classad.h"
@@ -95,6 +97,7 @@ PythonCollectorPlugin::initialize()
         if (PyErr_Occurred())
         {
             dprintf(D_ALWAYS, "Python exception occurred when loading module classad: %s; will not enable collector plugin.\n", handle_pyerror().c_str());
+            std::cerr << "HERE (PythonCollectorPlugin::initialize) (1) : PyErr_Clear()\n";
             PyErr_Clear();
         }
         return;
@@ -127,6 +130,7 @@ PythonCollectorPlugin::initialize()
             {
                 dprintf(D_ALWAYS, "Python exception occurred when loading module %s: %s\n", tmpMod, handle_pyerror().c_str());
                 // Assume we'll never go back to python - clear out the python exception.
+                std::cerr << "HERE (PythonCollectorPlugin::initialize) (2) : PyErr_Clear()\n";
                 PyErr_Clear();
             }
         }
@@ -153,6 +157,7 @@ PythonCollectorPlugin::shutdown()
             if (PyErr_Occurred())
             {
                 dprintf(D_ALWAYS, "Python exception occurred when invoking shutdown function: %s\n", handle_pyerror().c_str());
+                std::cerr << "HERE (PythonCollectorPlugin::shutdown) (1) : PyErr_Clear()\n";
                 PyErr_Clear();
             }
         }
@@ -184,6 +189,7 @@ PythonCollectorPlugin::update(int command, const ClassAd &ad)
         if (PyErr_Occurred())
         {
             dprintf(D_ALWAYS, "Python exception occurred when building arguments for update function: %s\n", handle_pyerror().c_str());
+            std::cerr << "HERE (PythonCollectorPlugin::update) (1) : PyErr_Clear()\n";
             PyErr_Clear();
         }
         return;
@@ -201,6 +207,7 @@ PythonCollectorPlugin::update(int command, const ClassAd &ad)
             if (PyErr_Occurred())
             {
                 dprintf(D_ALWAYS, "Python exception occurred when invoking update function: %s\n", handle_pyerror().c_str());
+                std::cerr << "HERE (PythonCollectorPlugin::update) (2) : PyErr_Clear()\n";
                 PyErr_Clear();
             }
         }
@@ -231,6 +238,7 @@ PythonCollectorPlugin::invalidate(int command, const ClassAd &ad)
         if (PyErr_Occurred())
         {
             dprintf(D_ALWAYS, "Python exception occurred when building arguments for invalidate function: %s\n", handle_pyerror().c_str());
+            std::cerr << "HERE (PythonCollectorPlugin::invalidate) (1) : PyErr_Clear()\n";
             PyErr_Clear();
         }
         return;
@@ -248,6 +256,7 @@ PythonCollectorPlugin::invalidate(int command, const ClassAd &ad)
             if (PyErr_Occurred())
             {
                 dprintf(D_ALWAYS, "Python exception occurred when invoking invalidate function: %s\n", handle_pyerror().c_str());
+                std::cerr << "HERE (PythonCollectorPlugin::invalidate) (2) : PyErr_Clear()\n";
                 PyErr_Clear();
             }
         }

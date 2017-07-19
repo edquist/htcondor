@@ -12,6 +12,8 @@
 #include "old_boost.h"
 #include "classad_wrapper.h"
 
+#include <iostream>
+
 using namespace boost::python;
 
 void
@@ -424,6 +426,7 @@ struct Param
         }
         catch (error_already_set)
         {
+            std::cerr << "HERE (getitem_impl) (1) : PyErr_Clear()\n";
             PyErr_Clear();
             return object(result_str);
         }
@@ -543,6 +546,7 @@ struct Param
             }
             catch (error_already_set)
             {
+                std::cerr << "HERE (items_processor) (1) : PyErr_Clear()\n";
                 PyErr_Clear();
                 pyvalue = object(value);
             }

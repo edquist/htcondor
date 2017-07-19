@@ -10,6 +10,8 @@
 #endif
 #include <string>
 
+#include <iostream>
+
 #include <classad/source.h>
 #include <classad/sink.h>
 #include <classad/classadCache.h>
@@ -898,6 +900,7 @@ convert_python_to_exprtree(boost::python::object value)
     {
         PyObject *keys = PyMapping_Keys(value.ptr());
         if (!keys) {
+            std::cerr << "HERE (convert_python_to_exprtree) (1) : PyErr_Clear()\n";
             PyErr_Clear();
         } else {
             ClassAdWrapper *ad = new ClassAdWrapper();
@@ -930,6 +933,7 @@ convert_python_to_exprtree(boost::python::object value)
     }
     else
     {
+        std::cerr << "HERE (convert_python_to_exprtree) (2) : PyErr_Clear()\n";
         PyErr_Clear();
     }
     PyErr_SetString(PyExc_TypeError, "Unknown ClassAd value type.");

@@ -9,6 +9,8 @@
 
 #include <memory>
 
+#include <iostream>
+
 #include "old_boost.h"
 #include "classad_wrapper.h"
 
@@ -121,6 +123,7 @@ struct Collector {
                 {
                     if (PyErr_ExceptionMatches(PyExc_StopIteration))
                     {
+                        std::cerr << "HERE (Collector) (1) : PyErr_Clear()\n";
                         PyErr_Clear();
                         break;
                     }

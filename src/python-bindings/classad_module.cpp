@@ -10,6 +10,8 @@
 #include "exprtree_wrapper.h"
 #include "classad_expr_return_policy.h"
 
+#include <iostream>
+
 #include <fcntl.h>
 
 using namespace boost::python;
@@ -70,6 +72,7 @@ void *convert_to_FILEptr(PyObject* obj) {
     int fd = PyObject_AsFileDescriptor(obj);
     if (fd == -1)
     {
+        std::cerr << "HERE (convert_to_FILEptr) (1) : PyErr_Clear()\n";
         PyErr_Clear();
         return nullptr;
     }

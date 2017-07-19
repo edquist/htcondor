@@ -10,6 +10,7 @@
 #include "old_boost.h"
 #include "query_iterator.h"
 
+#include <iostream>
 
 struct BulkQueryIterator
 {
@@ -60,6 +61,7 @@ public:
             {
                 if (PyErr_ExceptionMatches(PyExc_StopIteration))
                 {
+                    std::cerr << "HERE (BulkQueryIterator) (1) : PyErr_Clear()\n";
                     PyErr_Clear();
                     break;
                 }
