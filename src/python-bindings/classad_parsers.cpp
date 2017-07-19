@@ -8,6 +8,8 @@
 
 #include "classad_parsers.h"
 
+#include "stdio.h"
+
 // http://docs.python.org/3/c-api/apiabiversion.html#apiabiversion
 #if PY_MAJOR_VERSION >= 3
    #define PyInt_Check(op)  PyNumber_Check(op)
@@ -194,6 +196,9 @@ boost::shared_ptr<ClassAdWrapper> parseOne(boost::python::object input, ParserTy
         {
             std::cerr << "HERE (parseOne) (6)\n";
             std::cerr << "PyErr_Occurred = " << PyErr_Occurred() << "\n";
+            PyObject_Print(PyErr_Occurred(), stderr, Py_PRINT_RAW);
+            std::cerr << "\n";
+            //std::cerr << "           ... = " << PyObject_Str(PyErr_Occurred()) << "\n";
             if (PyErr_ExceptionMatches(PyExc_StopIteration))
             {
                 std::cerr << "HERE (parseOne) (7) : PyErr_Clear()\n";
@@ -204,10 +209,15 @@ boost::shared_ptr<ClassAdWrapper> parseOne(boost::python::object input, ParserTy
                 std::cerr << "HERE (parseOne) (8)\n";
                 boost::python::throw_error_already_set();
             }
+            std::cerr << "HERE (parseOne) (9)\n";
         }
+        std::cerr << "HERE (parseOne) (10)\n";
         const ClassAdWrapper &ad = boost::python::extract<ClassAdWrapper>(next_obj);
+        std::cerr << "HERE (parseOne) (11)\n";
         result_ad->Update(ad);
+        std::cerr << "HERE (parseOne) (12)\n";
     }
+    std::cerr << "HERE (parseOne) (13)\n";
     return result_ad;
 }
 
