@@ -249,8 +249,8 @@ OldClassAdIterator::next()
     std::cerr << "HERE (OldClassAdIterator::next()) (0)\n";
 
     if (m_done) {
-        THROW_EX(StopIteration, "All ads processed (1)");
         std::cerr << "HERE (OldClassAdIterator::next()) (1)\n";
+        THROW_EX(StopIteration, "All ads processed (1)");
     }
 
     bool reset_ptr = py_hasattr(m_source, "tell");
