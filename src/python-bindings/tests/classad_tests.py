@@ -74,7 +74,7 @@ class TestClassad(unittest.TestCase):
         self.assertEqual(ad["foo"], 1)
         self.assertEqual(" [bar = 2]", tf.read())
         tf = tempfile.TemporaryFile()
-        tf.write("-----\nfoo = 1\n\nbar = 2\n")
+        tf.write(b"-----\nfoo = 1\n\nbar = 2\n")
         tf.seek(0)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
