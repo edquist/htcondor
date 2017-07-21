@@ -54,8 +54,11 @@ FileLexerSource::ReadCharacter(void)
 	int character;
 
 	if (_file != NULL) {
+		std::cerr << "HERE (FileLexerSource::ReadCharacter) (1)";
 		character = fgetc(_file);
+		std::cerr << " : ftell(_file) = " << ftell(_file) << "\n";
 	} else {
+		std::cerr << "HERE (FileLexerSource::ReadCharacter) (2)\n";
 		character = -1;
 	}
  	_previous_character = character;
@@ -65,9 +68,10 @@ FileLexerSource::ReadCharacter(void)
 void 
 FileLexerSource::UnreadCharacter(void)
 {
-	//fseek(_file, -1, SEEK_CUR);
+	std::cerr << "HERE (FileLexerSource::UnreadCharacter) (1)";
 	fseek(_file, -1, SEEK_CUR);
 	//ungetc(_previous_character, _file);
+        std::cerr << " : ftell(_file) = " << ftell(_file) << "\n";
 	return;
 }
 
