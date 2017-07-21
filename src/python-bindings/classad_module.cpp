@@ -76,6 +76,11 @@ void *convert_to_FILEptr(PyObject* obj) {
         PyErr_Clear();
         return nullptr;
     }
+    struct stat st;
+    fstat(fd, &st);
+    std::cerr << "HERE (convert_to_FILEptr) (2) : fd=" << fd;
+    std::cerr << " dev=" << st.st_dev << " ino=" << st.st_ino << "\n";
+
     int flags = fcntl(fd, F_GETFL);
     if (flags == -1)
     {
