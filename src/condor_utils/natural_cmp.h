@@ -3,6 +3,6 @@
 
 // "natural" string compare -- a replacement for strcmp(3)
 // takes numeric portions into account, as specified in strverscmp(3)
-int natural_cmp(const char *s1, const char *s2);
+int natural_cmp(const std::string &str1, const std::string &str2);
 
 #endif

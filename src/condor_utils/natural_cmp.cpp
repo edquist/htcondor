@@ -1,17 +1,27 @@
 #include <ctype.h>
+#include <string>
+#include <algorithm>
 
 // "natural" string compare -- a replacement for strcmp(3)
 // takes numeric portions into account, as specified in strverscmp(3)
-int natural_cmp(const char *s1, const char *s2)
+int natural_cmp(const std::string &str1, const std::string &str2)
 {
-	const char *s1_beg = s1;      // s1 begin
-	const char *n1_beg, *n2_beg;  // s1/s2 number begin
-	const char *n1_end, *n2_end;  // s1/s2 number end
-	const char *z1_end, *z2_end;  // s1/s2 zeros end
+	typedef std::string::const_iterator iterator;
+	iterator s1 = str1.begin();
+	iterator s2 = str2.begin();
+	iterator s1e = str1.end();
+	iterator s2e = str2.end();
+
+	iterator s1_beg = s1;     // s1 begin
+	iterator n1_beg, n2_beg;  // s1/s2 number begin
+	iterator n1_end, n2_end;  // s1/s2 number end
+	iterator z1_end, z2_end;  // s1/s2 zeros end
 
 	// find first mismatch
-	for ( ; *s1 && *s1 == *s2; ++s1, ++s2) {}
-	if (*s1 == *s2) {
+	std::pair<iterator,iterator> mm = std::mismatch(s1, s1e, s2);
+	s1 = mm.first;
+	s2 = mm.second;
+	if (s1 == s1e && s2 == s2e) {
 		return 0;
 	}
 
