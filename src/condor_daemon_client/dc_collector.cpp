@@ -366,10 +366,7 @@ public:
 			if(sock) who = sock->get_sinful_peer();
 			dprintf(D_ALWAYS,"Failed to start non-blocking update to %s.\n",who);
 			if (dc_collector) {
-				while (!dc_collector->pending_update_list.empty()) {
-					// UpdateData's dtor removes this from the pending update list
-					delete(dc_collector->pending_update_list.front());
-				}
+				dc_collector->delete_pending_updates();
 				ud = 0;	
 			}
 		}
@@ -378,10 +375,7 @@ public:
 			if(sock) who = sock->get_sinful_peer();
 			dprintf(D_ALWAYS,"Failed to send non-blocking update to %s.\n",who);
 			if (dc_collector) {
-				while (!dc_collector->pending_update_list.empty()) {
-					// UpdateData's dtor removes this from the pending update list
-					delete(dc_collector->pending_update_list.front());
-				}
+				dc_collector->delete_pending_updates();
 				ud = 0;	
 			}
 		}
@@ -451,6 +445,13 @@ public:
 		}
 	}
 };
+
+void DCCollector::delete_pending_updates()
+{
+	while (!pending_update_list.empty())
+		// UpdateData's dtor removes this from the pending update list
+		delete pending_update_list.front();
+}
 
 bool
 DCCollector::sendUDPUpdate( int cmd, ClassAd* ad1, ClassAd* ad2, bool nonblocking )

@@ -121,6 +121,8 @@ private:
 	std::deque<class UpdateData*> pending_update_list;
 	friend class UpdateData;
 
+	void delete_pending_updates();
+
 	bool sendTCPUpdate( int cmd, ClassAd* ad1, ClassAd* ad2, bool nonblocking );
 	bool sendUDPUpdate( int cmd, ClassAd* ad1, ClassAd* ad2, bool nonblocking );
 
