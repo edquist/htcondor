@@ -448,9 +448,19 @@ public:
 
 void DCCollector::delete_pending_updates()
 {
-	while (!pending_update_list.empty())
-		// UpdateData's dtor removes this from the pending update list
-		delete pending_update_list.front();
+	std::deque<UpdateData*>::iterator it  = pending_update_list.begin();
+	std::deque<UpdateData*>::iterator end = pending_update_list.end();
+
+	for ( ; it != end; ++it) {
+		DCCollector&* ud_dcc = (*it)->dc_collector;
+		if (ud_dcc == this) {
+			// prevent UpdateData from removing itself from this
+			// pending_update_list, which we are clearing
+			ud_dcc = 0;
+		}
+		delete *it;
+	}
+	pending_update_list.clear();
 }
 
 bool
