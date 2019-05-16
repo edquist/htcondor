@@ -49,59 +49,59 @@ if ( WITH_BLAHP )
 		endif()
 
 
-		condor_pre_external( BLAHP blahp-1.16.5.1-p26 "lib;include" "done")
+		condor_pre_external( BLAHP blahp-1.18.41 "lib;include" "done")
 		
 		ExternalProject_Add(blahp
 						DEPENDS ${BLAHP_DEPENDS}
 					    #-- Download Step ----------
 					    DOWNLOAD_DIR ${BLAHP_STAGE}/dl
-						URL ${EXTERNALS_SOURCE_URL}/blahp-1.16.5.1.tar.gz
+						URL ${EXTERNALS_SOURCE_URL}/blahp-1.18.41.tar.gz
 						#--Patch step ----------
-						PATCH_COMMAND patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/iclassad.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/classad.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/mtrace.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/registry.patch -p1 && 
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/dl.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/lsf-jobid.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/add-sge.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/sge-status.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/sge-status-fallback.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/sge_helper.error-exit.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/add-condor.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-completion.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-qdel.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-status.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/shared-fs.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/shared-dir.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/config-paths.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/escape-args.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-history.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-status.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/submit-l.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/slurm.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/proxy-tools.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/ld-library-path.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/run-dir.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/request-memory.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-multicore.patch -p1 &&
-							cp ${CMAKE_CURRENT_SOURCE_DIR}/classads.m4 project/ &&
-							cp ${CMAKE_CURRENT_SOURCE_DIR}/${GLOBUS_M4_FILE} project/globus.m4 &&
-							cp ${CMAKE_CURRENT_SOURCE_DIR}/glite.m4 project/ &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/name-change.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/lsf-status.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/lsf-submit-conf.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-empty-jobid.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/job_registry.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/nolimit-proxies.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-bulk-status.patch -p1 &&
-							cp ${CMAKE_CURRENT_SOURCE_DIR}/pbs_status.py src/scripts/ &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/escape-args2.patch -p0 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-args.patch -p0 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-proxy.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/runtime-project.patch -p1 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/bash-source.patch -p0 &&
-							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/kill-job.patch -p0 &&
-							mv config/blah.config.template config/batch_gahp.config.template
+#						PATCH_COMMAND patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/iclassad.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/classad.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/mtrace.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/registry.patch -p1 && 
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/dl.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/lsf-jobid.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/add-sge.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/sge-status.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/sge-status-fallback.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/sge_helper.error-exit.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/add-condor.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-completion.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-qdel.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-status.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/shared-fs.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/shared-dir.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/config-paths.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/escape-args.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-history.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-status.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/submit-l.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/slurm.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/proxy-tools.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/ld-library-path.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/run-dir.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/request-memory.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-multicore.patch -p1 &&
+#							cp ${CMAKE_CURRENT_SOURCE_DIR}/classads.m4 project/ &&
+#							cp ${CMAKE_CURRENT_SOURCE_DIR}/${GLOBUS_M4_FILE} project/globus.m4 &&
+#							cp ${CMAKE_CURRENT_SOURCE_DIR}/glite.m4 project/ &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/name-change.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/lsf-status.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/lsf-submit-conf.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-empty-jobid.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/job_registry.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/nolimit-proxies.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/pbs-bulk-status.patch -p1 &&
+#							cp ${CMAKE_CURRENT_SOURCE_DIR}/pbs_status.py src/scripts/ &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/escape-args2.patch -p0 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-args.patch -p0 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/condor-proxy.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/runtime-project.patch -p1 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/bash-source.patch -p0 &&
+#							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/kill-job.patch -p0 &&
+#							mv config/blah.config.template config/batch_gahp.config.template
 						#--Configure step ----------
 						CONFIGURE_COMMAND export CPPFLAGS=${CPP11_FLAG} &&
 							./bootstrap && ./configure --with-classads-prefix=${CLASSADS_INSTALL_LOC}
@@ -151,4 +151,4 @@ if ( BLAHP_FOUND )
 else()
 	message ( STATUS "external skipped (blahp)" )
 endif ( BLAHP_FOUND )
-	
+

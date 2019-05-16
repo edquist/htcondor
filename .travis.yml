@@ -19,7 +19,7 @@ matrix:
 
 cache:
     directories:
-        - bld_external/blahp-1.16.5.1-p26
+        - bld_external/blahp-1.18.41
         - bld_external/boinc-client_release-7.14-7.14.1
         - bld_external/boost-1.66.0-p1
         - bld_external/canl-c-2.1.6
@@ -38,7 +38,7 @@ cache:
         - bld_external/unicoregahp-1.2.0
         - bld_external/voms-2.1.0-rc0
         - bld_external/zlib-1.2.3
-        - bld_external_rhel/blahp-1.16.5.1-p26
+        - bld_external_rhel/blahp-1.18.41
         - bld_external_rhel/boinc-client_release-7.14-7.14.1
         - bld_external_rhel/boost-1.66.0-p1
         - bld_external_rhel/canl-c-2.1.6

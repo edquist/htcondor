@@ -26,7 +26,7 @@ Testing/
 bld_external/
 build/cmake/glibc.cpp
 externals/bundles/blahp/1.16.1/
-externals/bundles/blahp/1.16.5.1/blahp-prefix/
+externals/bundles/blahp/1.18.41/blahp-prefix/
 externals/bundles/boost/1.39.0/
 externals/bundles/boost/1.49.0/boost-prefix/
 externals/bundles/coredumper/2011.05.24-r31/coredumper-prefix/

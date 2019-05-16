@@ -173,7 +173,7 @@ Source90: find-requires.sh
 %endif
 
 %if %bundle_uw_externals
-Source101: blahp-1.16.5.1.tar.gz
+Source101: blahp-1.18.41.tar.gz
 Source102: boost_1_49_0.tar.gz
 Source103: c-ares-1.3.0.tar.gz
 Source105: drmaa-1.6.1.tar.gz
