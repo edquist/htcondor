@@ -57,6 +57,9 @@ if ( WITH_BLAHP )
 					    DOWNLOAD_DIR ${BLAHP_STAGE}/dl
 						URL ${EXTERNALS_SOURCE_URL}/blahp-1.18.41.tar.gz
 						#--Patch step ----------
+ 						PATCH_COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/classads.m4 project/ &&
+ 							cp ${CMAKE_CURRENT_SOURCE_DIR}/${GLOBUS_M4_FILE} project/globus.m4 &&
+ 							cp ${CMAKE_CURRENT_SOURCE_DIR}/glite.m4 project/
 #						PATCH_COMMAND patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/iclassad.patch -p1 &&
 #							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/classad.patch -p1 &&
 #							patch -N -i ${CMAKE_CURRENT_SOURCE_DIR}/mtrace.patch -p1 &&
