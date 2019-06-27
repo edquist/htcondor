@@ -34,7 +34,7 @@ if (WITH_MUNGE)
 					#--Configure step ----------
 				    CONFIGURE_COMMAND ./configure --prefix=${MUNGE_INSTALL_LOC}
 				    #--Build Step ----------
-				    BUILD_COMMAND make
+				    BUILD_COMMAND ${MAKE}
 				    BUILD_IN_SOURCE 1
 				    #--install Step ----------
 				    INSTALL_DIR ${MUNGE_INSTALL_LOC}

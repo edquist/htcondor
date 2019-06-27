@@ -73,7 +73,7 @@ if (WITH_KRB5)
 				patch -N -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/getline.patch )
 
 			set (KRB5_CONFIGURE src/configure --prefix=${KRB5_INSTALL_LOC} --without-tcl --enable-static --sysconfdir=/etc --disable-thread-support )
-			set (KRB5_MAKE make )
+			set (KRB5_MAKE ${MAKE} )
 			set (KRB5_INSTALL make install )
 		endif()
 

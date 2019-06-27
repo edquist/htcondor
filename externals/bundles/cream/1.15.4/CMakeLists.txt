@@ -53,7 +53,7 @@ if ( WITH_CREAM )
 			#--Configure step ----------
 			CONFIGURE_COMMAND CFLAGS=-DWITH_IPV6 ./configure --prefix=${CREAMSOAP_INSTALL_LOC}
 			#--Build Step ----------
-			BUILD_COMMAND make
+			BUILD_COMMAND ${MAKE}
 			BUILD_IN_SOURCE 1
 			#--install Ste ----------
 			INSTALL_DIR ${CREAMSOAP_INSTALL_LOC}
@@ -75,7 +75,7 @@ if ( WITH_CREAM )
 			#--Configure step ----------
 			CONFIGURE_COMMAND ./configure --prefix=${LOG4CPP_INSTALL_LOC}
 			#--Build Step ----------
-			BUILD_COMMAND make && make check
+			BUILD_COMMAND ${MAKE} && make check
 			BUILD_IN_SOURCE 1
 			#--install Step ----------
 			INSTALL_DIR ${LOG4CPP_INSTALL_LOC}
@@ -98,7 +98,7 @@ if ( WITH_CREAM )
 			#--Configure step ----------
 			CONFIGURE_COMMAND ./configure --root=/ --prefix=${CANL_C_INSTALL_LOC} --libdir=lib
 			#--Build Step ----------
-			BUILD_COMMAND ${CANL_C_FLAGS} make libcanl_c.la
+			BUILD_COMMAND ${CANL_C_FLAGS} ${MAKE} libcanl_c.la
 			BUILD_IN_SOURCE 1
 			#--install Step ----------
 			INSTALL_DIR ${CANL_C_INSTALL_LOC}
@@ -120,7 +120,7 @@ if ( WITH_CREAM )
 			CONFIGURE_COMMAND echo "no config"
 			#--Build Step ----------
 			BUILD_COMMAND cd src &&
-				make libgridsite.a
+				${MAKE} libgridsite.a
 			BUILD_IN_SOURCE 1
 			#--install Step ----------
 			INSTALL_DIR ${GRIDSITE_INSTALL_LOC}
@@ -145,7 +145,7 @@ if ( WITH_CREAM )
 			#--Configure step ----------
 			CONFIGURE_COMMAND ./configure --with-globus=${GLOBUS_INSTALL_LOC}
 			#--Build Step ----------
-			BUILD_COMMAND ${GLITE_SECURITY_FLAGS} CFLAGS=-I${GLOBUS_INSTALL_LOC}/include/globus make libglite_security_gss.a
+			BUILD_COMMAND ${GLITE_SECURITY_FLAGS} CFLAGS=-I${GLOBUS_INSTALL_LOC}/include/globus ${MAKE} libglite_security_gss.a
 			BUILD_IN_SOURCE 1
 			#--install Step ----------
 			INSTALL_DIR ${GLITE_SECURITY_INSTALL_LOC}
@@ -167,7 +167,7 @@ if ( WITH_CREAM )
 			#--Configure step ----------
 			CONFIGURE_COMMAND ./configure --with-globus=${GLOBUS_INSTALL_LOC} --with-gsoap=${CREAMSOAP_INSTALL_LOC}
 			#--Build Step ----------
-			BUILD_COMMAND CFLAGS=-I${GLITE_SECURITY_INSTALL_LOC}/include make link-gsoap soap_version.h glite_gsplugin.cxx.thr.o &&
+			BUILD_COMMAND CFLAGS=-I${GLITE_SECURITY_INSTALL_LOC}/include ${MAKE} link-gsoap soap_version.h glite_gsplugin.cxx.thr.o &&
 				ar crv libglite_security_gsoap_plugin_cxx.a glite_gsplugin.cxx.thr.o &&
 				ranlib libglite_security_gsoap_plugin_cxx.a
 			BUILD_IN_SOURCE 1
@@ -237,7 +237,7 @@ if ( WITH_CREAM )
 				-DGLITE_PLUGIN_INCLUDE_DIRS:string=${CREAM_SOAP_PLUGIN_INSTALL_LOC}/include 
 				-DBoost_INCLUDE_DIRS:string=${BOOST_PATH}/include .
 			#--Build Step ----------
-			BUILD_COMMAND PATH=${CREAMSOAP_INSTALL_LOC}/bin:$ENV{PATH} make
+			BUILD_COMMAND PATH=${CREAMSOAP_INSTALL_LOC}/bin:$ENV{PATH} ${MAKE}
 			BUILD_IN_SOURCE 1
 			#--install Step ----------
 			INSTALL_DIR ${CREAM_INSTALL_LOC}

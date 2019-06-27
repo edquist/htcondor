@@ -61,7 +61,7 @@ if (WITH_OPENSSL)
 			if ( NOT AIX )
 				set (OPENSSL_CONFIGURE ${OPENSSL_CONFIGURE} -fPIC)
 			endif()
-			set (OPENSSL_MAKE make )
+			set (OPENSSL_MAKE ${MAKE} )
 			set (OPENSSL_INSTALL make install )
 		endif(WINDOWS)
     

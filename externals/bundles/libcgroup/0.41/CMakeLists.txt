@@ -40,7 +40,7 @@ if (WITH_LIBCGROUP)
 				    #--Configure step ----------
 				    CONFIGURE_COMMAND ./configure --prefix=${LIBCGROUP_INSTALL_LOC} --enable-static=yes --disable-dependency-tracking
 				    #--Build Step ----------
-				    BUILD_COMMAND make
+				    BUILD_COMMAND ${MAKE}
 				    BUILD_IN_SOURCE 1
 				    #--install Step ----------
 				    INSTALL_DIR ${LIBCGROUP_INSTALL_LOC}

@@ -34,7 +34,7 @@ if ( WITH_DRMAA )
 	
 	if (NOT WINDOWS)
 		set (DRMAA_CONFIGURE ./configure --prefix=${DRMAA_INSTALL_LOC})
-		set (DRMAA_MAKE make)
+		set (DRMAA_MAKE ${MAKE})
 		set (DRMAA_INSTALL cp libcondordrmaa.a ${DRMAA_INSTALL_LOC}/lib &&
 						   cp drmaa.h README ${DRMAA_INSTALL_LOC}/include/ )
 

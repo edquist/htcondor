@@ -63,7 +63,7 @@ if (WITH_GLOBUS)
 					#--Configure step ----------
 					CONFIGURE_COMMAND ./configure --prefix=${LIBTOOL_INSTALL_LOC}
 					#--Build Step ----------
-					BUILD_COMMAND make
+					BUILD_COMMAND ${MAKE}
 					BUILD_IN_SOURCE 1
 					#--install Step ----------
 					INSTALL_DIR ${LIBTOOL_INSTALL_LOC}
@@ -126,7 +126,7 @@ if (WITH_GLOBUS)
 							CONFIGURE_COMMAND ln -s lib ${GLOBUS_INSTALL_LOC}/lib64 &&
 							./configure --prefix=${GLOBUS_INSTALL_LOC} --with-flavor=${GLOBUS_FLAVOR}pthr
 							#--Build Step ----------
-							BUILD_COMMAND ${GLOBUS_FLAGS} make gpt globus_gssapi_error globus-resource-management-sdk globus-data-management-sdk &&
+							BUILD_COMMAND ${GLOBUS_FLAGS} ${MAKE} gpt globus_gssapi_error globus-resource-management-sdk globus-data-management-sdk &&
 								cd ${GLOBUS_INSTALL_LOC}/include/globus/ && ln -sf ${GLOBUS_FLAVOR}pthr/globus_config.h .
 							BUILD_IN_SOURCE 1
 							#--install Step ----------

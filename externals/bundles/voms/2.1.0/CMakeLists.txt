@@ -57,7 +57,7 @@ if ( WITH_VOMS AND WITH_GLOBUS )
 					--with-api-only
 					--disable-docs
 			#--Build Step ----------
-			BUILD_COMMAND make
+			BUILD_COMMAND ${MAKE}
 			BUILD_IN_SOURCE 1
 			#--install Step ----------
 			INSTALL_DIR ${VOMS_INSTALL_LOC}

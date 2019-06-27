@@ -34,7 +34,7 @@ if (WITH_SCITOKENS)
 					#--Configure step ----------
 				    CONFIGURE_COMMAND cmake -DJWT_CPP_DIR=${CMAKE_SOURCE_DIR}/src/condor_io/ -DCMAKE_INSTALL_PREFIX=${MUNGE_INSTALL_LOC}
 				    #--Build Step ----------
-				    BUILD_COMMAND make
+				    BUILD_COMMAND ${MAKE}
 				    BUILD_IN_SOURCE 1
 				    #--install Step ----------
 				    INSTALL_DIR ${SCITOKENS_INSTALL_LOC}

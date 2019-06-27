@@ -63,7 +63,7 @@ if (WITH_GLOBUS)
 							#--Configure step ----------
 							CONFIGURE_COMMAND ./configure ${GLOBUS_FLAGS} --prefix=${GLOBUS_INSTALL_LOC}
 							#--Build Step ----------
-							BUILD_COMMAND make &&
+							BUILD_COMMAND ${MAKE} &&
 								ln -sfn . ${GLOBUS_INSTALL_LOC}/include/globus
 							BUILD_IN_SOURCE 1
 							#--install Step ----------

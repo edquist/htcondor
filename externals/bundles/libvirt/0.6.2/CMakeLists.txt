@@ -50,7 +50,7 @@ if (WITH_LIBVIRT)
 					#--Configure step ----------
 				    CONFIGURE_COMMAND ./configure --prefix=${LIBVIRT_INSTALL_LOC} --without-python --without-xen --without-libvirtd --without-remote --without-test --without-uml --without-openvz --without-avahi --without-selinux --without-sasl ${LIBVIRT_CONFIGURE}
 				    #--Build Step ----------
-				    BUILD_COMMAND make
+				    BUILD_COMMAND ${MAKE}
 				    BUILD_IN_SOURCE 1
 				    #--install Step ----------
 				    INSTALL_DIR ${LIBVIRT_INSTALL_LOC}

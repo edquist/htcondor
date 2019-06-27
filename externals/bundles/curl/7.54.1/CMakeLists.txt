@@ -42,7 +42,7 @@ if (WITH_CURL)
 
 		else()
 			set (CURL_PATCH echo "Nothing to patch on Unix")
-			set (CURL_MAKE make)
+			set (CURL_MAKE ${MAKE})
 			set (CURL_INSTALL make install)
 			if ( BUILDING_OPENSSL )
 				set (CURL_DEPENDS ${OPENSSL_REF})

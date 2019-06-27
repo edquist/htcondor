@@ -50,7 +50,7 @@ if (NOT CLIPPED)
 
 		set (GLIBC_CONFIGURE ./configure --enable-static-nss --enable-add-ons=linuxthreads,c_stubs,glibc-compat --disable-shared --without-cvs)
 
-		set (GLIBC_MAKE make )
+		set (GLIBC_MAKE ${MAKE} )
 
 	elseif(${GLIBC_VERSION} STREQUAL "25")
 
@@ -196,7 +196,7 @@ patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-tempnam-warn
 		set( GLIBC_FLAGS export CC=gcc && export CXX=g++ && export "CFLAGS=-mtune=generic -fasynchronous-unwind-tables -DNDEBUG -g -O3" )
 		set( GLIBC_CONFIGURE ./configure CC=gcc CXX=g++ "CFLAGS=-mtune=generic -fasynchronous-unwind-tables -DNDEBUG -g -O3 -fno-asynchronous-unwind-tables" --prefix=/usr --enable-add-ons=ports,nptl,rtkaio,c_stubs,libidn --with-headers=/usr/include --enable-kernel=2.6.32 --enable-bind-now --build=x86_64-redhat-linux --enable-multi-arch --enable-obsolete-rpc --enable-systemtap --disable-profile --enable-nss-crypt --enable-static-nss )
 
-		set( GLIBC_MAKE make -r )
+		set( GLIBC_MAKE ${MAKE} -r )
 
 		set (GLIBC_PATCH patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/enable-static-nss.patch && patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-static-link-warning.patch && patch --binary -N -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-tempnam-warning.patch && patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-nscd.patch)
 
@@ -215,7 +215,7 @@ patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-tempnam-warn
 		set( GLIBC_FLAGS export CC=x86_64-linux-gnu-gcc-4.8 && export CXX=x86_64-linux-gnu-g++-4.8 && export AUTOCONF=false )
 		set( GLIBC_CONFIGURE ./configure --host=x86_64-linux-gnu --build=x86_64-linux-gnu --prefix=/usr --without-cvs --enable-add-ons=libidn,nptl --enable-profile --without-selinux --enable-stackguard-randomization --enable-obsolete-rpc "--with-pkgversion=Ubuntu EGLIBC 2.19-0ubuntu6" --with-bugurl=https://bugs.launchpad.net/ubuntu/+source/eglibc/+bugs --enable-pt_chown --with-headers=${GLIBC_BUILD_PREFIX}/debian/include --enable-kernel=2.6.24 --enable-multi-arch )
 
-		set( GLIBC_MAKE make -r )
+		set( GLIBC_MAKE ${MAKE} -r )
 
 		set (GLIBC_PATCH patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/enable-static-nss.patch && patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-static-link-warning.patch && patch --binary -N -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-tempnam-warning.patch && patch -N --binary -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/${VER}/disable-nscd.patch)
 

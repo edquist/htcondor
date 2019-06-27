@@ -38,7 +38,7 @@ if ( NOT PROPER AND NOT LINUX AND NOT DARWIN )
 		set (PCRE_PATCH  patch -N < ${CMAKE_CURRENT_SOURCE_DIR}/longlong.patch &&
 						 patch -N < ${CMAKE_CURRENT_SOURCE_DIR}/unittests.patch )
 		set (PCRE_CONFIGURE ./configure --prefix=${PCRE_INSTALL_LOC} --disable-cpp )
-		set (PCRE_MAKE make && make test )
+		set (PCRE_MAKE ${MAKE} && make test )
 		set (PCRE_INSTALL make install )
 	endif()
 

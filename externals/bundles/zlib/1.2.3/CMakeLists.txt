@@ -27,7 +27,7 @@ if ( NOT CLIPPED )
 			    #--Configure step ----------
 			    CONFIGURE_COMMAND ./configure --prefix=${ZLIB_INSTALL_LOC}
 			    #--Build Step ----------
-			    BUILD_COMMAND make
+			    BUILD_COMMAND ${MAKE}
 			    BUILD_IN_SOURCE 1
 			    #--install Step ----------
 			    INSTALL_DIR ${ZLIB_INSTALL_LOC}

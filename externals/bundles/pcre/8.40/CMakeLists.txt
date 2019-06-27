@@ -102,7 +102,7 @@ if( SYSTEM_NAME STREQUAL "sl6.3" )
 
 	set( PCRE_DOWNLOAD ${PCRE_VER}.tar.gz )
 	set( PCRE_CONFIGURE ./configure --prefix=${PCRE_INSTALL_LOC} --disable-cpp )
-	set( PCRE_MAKE make && make test )
+	set( PCRE_MAKE ${MAKE} && make test )
 	set( PCRE_INSTALL make install )
 
 	ExternalProject_Add(pcre

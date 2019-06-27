@@ -37,7 +37,7 @@ if ( WITH_BOINC )
 				    #--Configure step ----------
 				    CONFIGURE_COMMAND ./_autosetup && ./configure --disable-server --disable-client --disable-manager
 				    #--Build Step ----------
-				    BUILD_COMMAND cd lib && make && cd ../samples/condor && make
+				    BUILD_COMMAND cd lib && ${MAKE} && cd ../samples/condor && ${MAKE}
 				    BUILD_IN_SOURCE 1
 				    #--install Step ----------
 				    INSTALL_DIR ${BOINC_INSTALL_LOC}
