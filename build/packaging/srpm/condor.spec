@@ -1524,19 +1524,6 @@ rm -rf %{buildroot}
 
 %files externals
 %_sbindir/unicore_gahp
-%if %blahp
-# does this really belong here?
-%dir %_libexecdir/condor/glite/etc
-%_libexecdir/condor/glite/etc/glite-ce-blahparser
-%_libexecdir/condor/glite/etc/glite-ce-blparser
-%_libexecdir/condor/glite/etc/glite-ce-check-blparser
-%_libexecdir/condor/glite/etc/batch_gahp.config
-%_libexecdir/condor/glite/etc/batch_gahp.config.template
-%_libexecdir/condor/glite/etc/blparser.conf.template
-%dir %_libexecdir/condor/glite/share
-%dir %_libexecdir/condor/glite/share/doc
-%_libexecdir/condor/glite/share/doc/glite-ce-blahp-@PVER@/LICENSE
-%endif
 
 %endif
 
