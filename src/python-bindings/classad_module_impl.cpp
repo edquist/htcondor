@@ -513,16 +513,16 @@ export_classad()
         // I see no way to use the SetParentScope interface safely.
         // Delay exposing it to Python until we absolutely have to!
         //.def("setParentScope", &ClassAdWrapper::SetParentScope)
-        .def("__iter__", boost::python::range(&ClassAdWrapper::beginKeys, &ClassAdWrapper::endKeys), condor::classad_expr_return_policy<>())
-        .def("keys", boost::python::range(&ClassAdWrapper::beginKeys, &ClassAdWrapper::endKeys), condor::classad_expr_return_policy<>(),
+        .def("__iter__", boost::python::range(&ClassAdWrapper::beginKeys, &ClassAdWrapper::endKeys))
+        .def("keys", boost::python::range(&ClassAdWrapper::beginKeys, &ClassAdWrapper::endKeys),
             R"C0ND0R(
             As :meth:`dict.keys`.
             )C0ND0R")
-        .def("values", boost::python::range(&ClassAdWrapper::beginValues, &ClassAdWrapper::endValues), condor::classad_expr_return_policy<>(),
+        .def("values", boost::python::range(&ClassAdWrapper::beginValues, &ClassAdWrapper::endValues),
             R"C0ND0R(
             As :meth:`dict.values`.
             )C0ND0R")
-        .def("items", boost::python::range(&ClassAdWrapper::beginItems, &ClassAdWrapper::endItems), condor::classad_expr_return_policy<>(),
+        .def("items", boost::python::range(&ClassAdWrapper::beginItems, &ClassAdWrapper::endItems),
             R"C0ND0R(
             As :meth:`dict.items`.
             )C0ND0R")
