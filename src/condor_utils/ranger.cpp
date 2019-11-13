@@ -250,28 +250,27 @@ void persist_range_single(std::string &s, const typename ranger<T>::range &rr)
 }
 
 template <class T>
-void persist(std::string &s, const ranger<T> &r)
+void ranger<T>::persist(std::string &s) const
 {
     s.clear();
-    if (r.empty())
+    if (empty())
         return;
 
-    for (auto &rr : r)
+    for (auto &rr : *this)
         persist_range_single<T>(s, rr);
 
     s.erase(s.size() - 1);
 }
 
 template <class T>
-void persist_range(std::string &s, const ranger<T> &r,
-                                   const typename ranger<T>::range &rr)
+void ranger<T>::persist_range(std::string &s, const range &rr) const
 {
     s.clear();
-    if (r.empty())
+    if (empty())
         return;
 
-    auto rit = r.find(rr._start).first;
-    for (; rit != r.end() && rit->_start < rr._end; ++rit) {
+    auto rit = find(rr._start).first;
+    for (; rit != end() && rit->_start < rr._end; ++rit) {
         typename ranger<T>::range rr_new = { std::max(rit->_start, rr._start),
                                              std::min(rit->_end,   rr._end) };
         persist_range_single<T>(s, rr_new);
@@ -281,14 +280,15 @@ void persist_range(std::string &s, const ranger<T> &r,
 }
 
 template <class T>
-void persist_slice(std::string &s, const ranger<T> &r, int start, int back)
+void ranger<T>::persist_slice(std::string &s, element_type start,
+                                              element_type back) const
 {
-    persist_range(s, r, {start, back+1});
+    persist_range(s, {start, back+1});
 }
 
 // return 0 on success, (-1 - (position in string)) on parse failure
 template <class T>
-int load(ranger<T> &r, const char *s)
+int ranger<T>::load(const char *s)
 {
     const char *sstart = s;
     while (*s) {
@@ -314,22 +314,14 @@ int load(ranger<T> &r, const char *s)
         else if (*s)
             // expected either ';' or end of string
             return -1 - int(s - sstart);
-        r.insert({start, back + 1});
+        insert({start, back + 1});
     }
     return 0;
 }
 
 
 
-// explicit template instantiations
+// put all explicit template instantiations here:
 
 template struct ranger<int>;
-
-
-template void persist<int>(std::string &s, const ranger<int> &r);
-template void persist_range<int>(std::string &s, const ranger<int> &r,
-                                            const ranger<int>::range &rr);
-template void persist_slice<int>(std::string &s, const ranger<int> &r,
-                                            int start, int back);
-template int load<int>(ranger<int> &r, const char *s);
 

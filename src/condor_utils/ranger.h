@@ -2,6 +2,7 @@
 #define __RANGER_H__
 
 #include <set>
+#include <string>
 
 template <class T>
 struct ranger {
@@ -47,6 +48,16 @@ struct ranger {
     const range &back()          const { return *--end(); }
     element_type front_element() const { return front().front(); }
     element_type back_element()  const { return back().back(); }
+
+
+    // persist / load ranger objects
+    void persist(std::string &s) const;
+    void persist_range(std::string &s, const range &rr) const;
+    void persist_slice(std::string &s, element_type start,
+                                       element_type back) const;
+
+    // return 0 on success, (-1 - (position in string)) on parse failure
+    int load(const char *s);
 
     private:
     // the state of our ranger
@@ -143,22 +154,5 @@ struct ranger<T>::elements::iterator {
  *  where each sub-range is either N-M (for inclusive N..M) or N for a single
  *  integer.  Eg, "2", "5-10", "4;7;10-20;44;50-60"
  */
-
-#include <string>
-
-template <class T>
-void persist(std::string &s, const ranger<T> &r);
-
-template <class T>
-void persist_slice(std::string &s, const ranger<T> &r, int start, int back);
-
-template <class T>
-void persist_range(std::string &s, const ranger<T> &r,
-                                   const typename ranger<T>::range &rr);
-
-// return 0 on success, (-1 - (position in string)) on parse failure
-template <class T>
-int load(ranger<T> &r, const char *s);
-
 
 #endif
