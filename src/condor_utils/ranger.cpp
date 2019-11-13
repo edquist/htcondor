@@ -7,7 +7,8 @@
 ///// ranger insert/erase/find implementation /////
 
 
-ranger::iterator ranger::insert(ranger::range r)
+template <class T>
+ranger<T>::iterator ranger::insert(ranger::range r)
 {
     // lower_bound here will coalesce an adjacent disjoint range;
     // can use upper_bound instead to avoid this and leave them fractured
@@ -33,7 +34,8 @@ ranger::iterator ranger::insert(ranger::range r)
     return it_start == it_back ? it_back : forest.erase(it_start, it_back);
 }
 
-ranger::iterator ranger::erase(ranger::range r)
+template <class T>
+ranger<T>::iterator ranger::erase(ranger::range r)
 {
     iterator it_start = upper_bound(r._start);
     iterator it = it_start;
@@ -66,25 +68,29 @@ ranger::iterator ranger::erase(ranger::range r)
     return it_start == it_end ? it_end : forest.erase(it_start, it_end);
 }
 
-std::pair<ranger::iterator, bool>
-ranger::find(element_type x) const
+template <class T>
+std::pair<ranger<T>::iterator, bool>
+ranger<T>::find(element_type x) const
 {
     iterator it = upper_bound(x);
     return {it, it != end() && it->_start <= x};
 }
 
-bool ranger::contains(element_type x) const
+template <class T>
+bool ranger<T>::contains(element_type x) const
 {
     return find(x).second;
 }
 
-ranger::ranger(const std::initializer_list<ranger::range> &il)
+template <class T>
+ranger<T>::ranger(const std::initializer_list<ranger::range> &il)
 {
     for (const range &rr : il)
         insert(rr);
 }
 
-ranger::ranger(const std::initializer_list<ranger::element_type> &il)
+template <class T>
+ranger<T>::ranger(const std::initializer_list<ranger::element_type> &il)
 {
     for (const element_type &e : il)
         insert(e);
@@ -92,21 +98,23 @@ ranger::ranger(const std::initializer_list<ranger::element_type> &il)
 
 
 // specialize for std::set containers to use std::set::lower_bound
-static inline std::set<ranger::range>::const_iterator
-lower_bounder(const std::set<ranger::range> &f, ranger::range rr)
+template <class T>
+static inline std::set<ranger<T>::range>::const_iterator
+lower_bounder(const std::set<ranger<T>::range> &f, ranger<T>::range rr)
 {
     return f.lower_bound(rr);
 }
 
-static inline std::set<ranger::range>::const_iterator
-upper_bounder(const std::set<ranger::range> &f, ranger::range rr)
+template <class T>
+static inline std::set<ranger<T>::range>::const_iterator
+upper_bounder(const std::set<ranger<T>::range> &f, ranger<T>::range rr)
 {
     return f.upper_bound(rr);
 }
 
 // generic containers (other than std::set) use std::lower_bound
-template <class C> static inline typename C::const_iterator
-lower_bounder(const C &f, ranger::range rr)
+template <class C, class T> static inline typename C::const_iterator
+lower_bounder(const C &f, ranger<T>::range rr)
 {
     return std::lower_bound(f.begin(), f.end(), rr);
 }

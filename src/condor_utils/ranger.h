@@ -5,10 +5,11 @@
 
 typedef struct ranger range_mask;
 
+template <class T>
 struct ranger {
     struct range;
     struct elements;
-    typedef int                         element_type;
+    typedef T                           element_type;
     typedef std::set<range>             forest_type;
     typedef forest_type::const_iterator iterator;
 
@@ -51,7 +52,8 @@ struct ranger {
     forest_type forest;
 };
 
-struct ranger::range {
+template <class T>
+struct ranger<T>::range {
     struct iterator;
     typedef ranger::element_type value_type;
 
@@ -75,7 +77,8 @@ struct ranger::range {
     mutable value_type _end;
 };
 
-struct ranger::range::iterator {
+template <class T>
+struct ranger<T>::range::iterator {
     typedef ranger::element_type value_type;
 
     iterator() : i(0) {}
@@ -96,7 +99,8 @@ struct ranger::range::iterator {
     value_type i;
 };
 
-struct ranger::elements {
+template <class T>
+struct ranger<T>::elements {
     struct iterator;
     typedef ranger::element_type value_type;
 
@@ -108,7 +112,8 @@ struct ranger::elements {
     const ranger &r;
 };
 
-struct ranger::elements::iterator {
+template <class T>
+struct ranger<T>::elements::iterator {
     iterator(ranger::iterator si) : sit(si), rit_valid(0) {}
     iterator() : rit_valid(0) {}
 
