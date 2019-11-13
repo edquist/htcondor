@@ -104,8 +104,6 @@ struct ranger<T>::range::iterator {
     iterator    operator-(value_type n) const {      return i-n;   }
     iterator   &operator++()                  { ++i; return *this; }
     iterator   &operator--()                  { --i; return *this; }
-    iterator    operator++(int)               {      return i++;   }
-    iterator    operator--(int)               {      return i--;   }
 
     // takes care of rel ops :D
     operator value_type()               const {      return i;     }
