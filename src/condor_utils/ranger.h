@@ -3,15 +3,13 @@
 
 #include <set>
 
-typedef struct ranger range_mask;
-
 template <class T>
 struct ranger {
     struct range;
     struct elements;
-    typedef T                           element_type;
-    typedef std::set<range>             forest_type;
-    typedef forest_type::const_iterator iterator;
+    typedef T                                    element_type;
+    typedef std::set<range>                      forest_type;
+    typedef typename forest_type::const_iterator iterator;
 
     ranger() {};
     ranger(const std::initializer_list<range> &il);
@@ -51,6 +49,8 @@ struct ranger {
     // the state of our ranger
     forest_type forest;
 };
+
+typedef ranger<int> range_mask;
 
 template <class T>
 struct ranger<T>::range {
@@ -126,41 +126,46 @@ struct ranger<T>::elements::iterator {
     private:
     void mk_valid();
 
-    ranger::iterator sit;
-    range::iterator rit;
+    typename ranger::iterator sit;
+    typename range::iterator rit;
     bool rit_valid;
 };
 
 
 // these are inline but must appear after their return type definitions
 
-template <class T>
-ranger<T>::elements           ranger<T>::get_elements()    const { return *this; }
+template <class T> typename ranger<T>::elements
+ranger<T>::get_elements()    const { return *this; }
 
-template <class T>
-ranger<T>::elements::iterator ranger<T>::elements::begin() const { return r.begin(); }
-template <class T>
-ranger<T>::elements::iterator ranger<T>::elements::end()   const { return r.end();   }
+template <class T> typename ranger<T>::elements::iterator
+ranger<T>::elements::begin() const { return r.begin(); }
 
-template <class T>
-ranger<T>::range::iterator    ranger<T>::range::begin()    const { return _start; }
-template <class T>
-ranger<T>::range::iterator    ranger<T>::range::end()      const { return _end;   }
+template <class T> typename ranger<T>::elements::iterator
+ranger<T>::elements::end()   const { return r.end();   }
 
-template <class T>
-ranger<T>::iterator           ranger<T>::begin()   const { return forest.begin(); }
-template <class T>
-ranger<T>::iterator           ranger<T>::end()     const { return forest.end();   }
+template <class T> typename ranger<T>::range::iterator
+ranger<T>::range::begin()    const { return _start; }
 
-template <class T>
-const ranger<T>::range &ranger<T>::front()         const { return *begin();       }
-template <class T>
-ranger<T>::element_type ranger<T>::front_element() const { return front()._start; }
+template <class T> typename ranger<T>::range::iterator
+ranger<T>::range::end()      const { return _end;   }
 
-template <class T>
-const ranger<T>::range &ranger<T>::back()          const { return *--end();       }
-template <class T>
-ranger<T>::element_type ranger<T>::back_element()  const { return back().back();  }
+template <class T> typename ranger<T>::iterator
+ranger<T>::begin()   const { return forest.begin(); }
+
+template <class T> typename ranger<T>::iterator
+ranger<T>::end()     const { return forest.end();   }
+
+template <class T> const typename ranger<T>::range &
+ranger<T>::front()         const { return *begin();       }
+
+template <class T> typename ranger<T>::element_type
+ranger<T>::front_element() const { return front()._start; }
+
+template <class T> const typename ranger<T>::range &
+ranger<T>::back()          const { return *--end();       }
+
+template <class T> typename ranger<T>::element_type
+ranger<T>::back_element()  const { return back().back();  }
 
 template <class T>
 void ranger<T>::insert(element_type e) { insert(range(e, e + 1)); }
@@ -193,7 +198,7 @@ void persist_slice(std::string &s, const ranger<T> &r, int start, int back);
 
 template <class T>
 void persist_range(std::string &s, const ranger<T> &r,
-                                   const ranger<T>::range &rr);
+                                   const typename ranger<T>::range &rr);
 
 // return 0 on success, (-1 - (position in string)) on parse failure
 template <class T>

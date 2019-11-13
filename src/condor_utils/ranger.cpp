@@ -8,7 +8,7 @@
 
 
 template <class T>
-ranger<T>::iterator ranger<T>::insert(ranger<T>::range r)
+typename ranger<T>::iterator ranger<T>::insert(range r)
 {
     // lower_bound here will coalesce an adjacent disjoint range;
     // can use upper_bound instead to avoid this and leave them fractured
@@ -35,7 +35,7 @@ ranger<T>::iterator ranger<T>::insert(ranger<T>::range r)
 }
 
 template <class T>
-ranger<T>::iterator ranger<T>::erase(ranger<T>::range r)
+typename ranger<T>::iterator ranger<T>::erase(range r)
 {
     iterator it_start = upper_bound(r._start);
     iterator it = it_start;
@@ -69,7 +69,7 @@ ranger<T>::iterator ranger<T>::erase(ranger<T>::range r)
 }
 
 template <class T>
-std::pair<ranger<T>::iterator, bool>
+std::pair<typename ranger<T>::iterator, bool>
 ranger<T>::find(element_type x) const
 {
     iterator it = upper_bound(x);
@@ -99,41 +99,43 @@ ranger<T>::ranger(const std::initializer_list<ranger<T>::element_type> &il)
 
 // specialize for std::set containers to use std::set::lower_bound
 template <class T>
-static inline std::set<ranger<T>::range>::const_iterator
-lower_bounder(const std::set<ranger<T>::range> &f, ranger<T>::range rr)
+static inline typename std::set<typename ranger<T>::range>::const_iterator
+lower_bounder(const typename std::set<typename ranger<T>::range> &f,
+                                      typename ranger<T>::range rr)
 {
     return f.lower_bound(rr);
 }
 
 template <class T>
-static inline std::set<ranger<T>::range>::const_iterator
-upper_bounder(const std::set<ranger<T>::range> &f, ranger<T>::range rr)
+static inline typename std::set<typename ranger<T>::range>::const_iterator
+upper_bounder(const typename std::set<typename ranger<T>::range> &f,
+                                      typename ranger<T>::range rr)
 {
     return f.upper_bound(rr);
 }
 
 // generic containers (other than std::set) use std::lower_bound
 template <class C, class T> static inline typename C::const_iterator
-lower_bounder(const C &f, ranger<T>::range rr)
+lower_bounder(const C &f, typename ranger<T>::range rr)
 {
     return std::lower_bound(f.begin(), f.end(), rr);
 }
 
 template <class C, class T> static inline typename C::const_iterator
-upper_bounder(const C &f, ranger<T>::range rr)
+upper_bounder(const C &f, typename ranger<T>::range rr)
 {
     return std::upper_bound(f.begin(), f.end(), rr);
 }
 
 
 template <class T>
-ranger<T>::iterator ranger<T>::lower_bound(element_type x) const
+typename ranger<T>::iterator ranger<T>::lower_bound(element_type x) const
 {
     return lower_bounder<forest_type,T>(forest, x);
 }
 
 template <class T>
-ranger<T>::iterator ranger<T>::upper_bound(element_type x) const
+typename ranger<T>::iterator ranger<T>::upper_bound(element_type x) const
 {
     return upper_bounder<forest_type,T>(forest, x);
 }
@@ -166,14 +168,16 @@ void ranger<T>::elements::iterator::mk_valid()
 }
 
 template <class T>
-ranger<T>::element_type ranger<T>::elements::iterator::operator*()
+typename ranger<T>::element_type
+ranger<T>::elements::iterator::operator*()
 {
     mk_valid();
     return *rit;
 }
 
 template <class T>
-ranger<T>::elements::iterator &ranger<T>::elements::iterator::operator++()
+typename ranger<T>::elements::iterator &
+ranger<T>::elements::iterator::operator++()
 {
     mk_valid();
     if (++rit == sit->end()) {
@@ -184,7 +188,8 @@ ranger<T>::elements::iterator &ranger<T>::elements::iterator::operator++()
 }
 
 template <class T>
-ranger<T>::elements::iterator &ranger<T>::elements::iterator::operator--()
+typename ranger<T>::elements::iterator &
+ranger<T>::elements::iterator::operator--()
 {
     mk_valid();
     if (rit == sit->begin()) {
@@ -233,7 +238,7 @@ bool ranger<T>::elements::iterator::operator!=(iterator &it)
 
 template <class T>
 static
-void persist_range_single(std::string &s, const ranger<T>::range &rr)
+void persist_range_single(std::string &s, const typename ranger<T>::range &rr)
 {
     char buf[64];
     int n;
@@ -252,14 +257,14 @@ void persist(std::string &s, const ranger<T> &r)
         return;
 
     for (auto &rr : r)
-        persist_range_single(s, rr);
+        persist_range_single<T>(s, rr);
 
     s.erase(s.size() - 1);
 }
 
 template <class T>
 void persist_range(std::string &s, const ranger<T> &r,
-                                   const ranger<T>::range &rr)
+                                   const typename ranger<T>::range &rr)
 {
     s.clear();
     if (r.empty())
@@ -267,9 +272,9 @@ void persist_range(std::string &s, const ranger<T> &r,
 
     auto rit = r.find(rr._start).first;
     for (; rit != r.end() && rit->_start < rr._end; ++rit) {
-        ranger<T>::range rr_new = { std::max(rit->_start, rr._start),
-                                 std::min(rit->_end,   rr._end) };
-        persist_range_single(s, rr_new);
+        typename ranger<T>::range rr_new = { std::max(rit->_start, rr._start),
+                                             std::min(rit->_end,   rr._end) };
+        persist_range_single<T>(s, rr_new);
     }
 
     s.erase(s.size() - 1);
@@ -325,6 +330,6 @@ template void persist<int>(std::string &s, const ranger<int> &r);
 template void persist_range<int>(std::string &s, const ranger<int> &r,
                                             const ranger<int>::range &rr);
 template void persist_slice<int>(std::string &s, const ranger<int> &r,
-                                            int start, int back)
+                                            int start, int back);
 template int load<int>(ranger<int> &r, const char *s);
 

@@ -301,7 +301,7 @@ bool OTEST_ranger(void) {
 static int ranger_load_insert_persist(const char *prev, const char *input,
                                       std::string &s)
 {
-    ranger r;
+    ranger<int> r;
     if (load(r, prev) < 0 || load(r, input)) {
         emit_alert("Unexpected error loading range spec for insert");
         return -1;
@@ -313,7 +313,7 @@ static int ranger_load_insert_persist(const char *prev, const char *input,
 static int ranger_load_erase_persist(const char *prev, const char *input,
                                      std::string &s)
 {
-    ranger r, e;
+    ranger<int> r, e;
     if (load(r, prev) < 0 || load(e, input)) {
         emit_alert("Unexpected error loading range spec for erase");
         return -1;
@@ -375,7 +375,7 @@ static bool test_ranger_misc_persist_load_tmpl()
 static int ranger_load_persist_slice(const char *input, int start, int back,
                                      std::string &s)
 {
-    ranger r;
+    ranger<int> r;
     if (load(r, input)) {
         emit_alert("Unexpected error loading range spec for persist slice");
         return -1;
@@ -449,7 +449,7 @@ static bool test_ranger_misc_contains(int N)
     emit_param("Input", t.input);
     emit_param("Element", elementbuf);
 
-    ranger r;
+    ranger<int> r;
     if (load(r, t.input)) {
         emit_alert("Unexpected error loading range spec for contains");
         FAIL;
@@ -476,8 +476,8 @@ static bool test_ranger_misc_contains_tmpl()
 
 void xx_bld_test()
 {
-    ranger r = { 1, 2, 3, 45};
-    ranger r2 = { {1,10}, {20,30}, {40,50} };
+    ranger<int> r = { 1, 2, 3, 45};
+    ranger<int> r2 = { {1,10}, {20,30}, {40,50} };
 
 }
 
@@ -488,7 +488,7 @@ void xx_bld_test()
 static int ranger_load_insert_persist_elt(const char *input, int elt,
                                           std::string &s)
 {
-    ranger r;
+    ranger<int> r;
     if (load(r, input) < 0) {
         emit_alert("Unexpected error loading range spec for element insert");
         return -1;
@@ -501,7 +501,7 @@ static int ranger_load_insert_persist_elt(const char *input, int elt,
 static int ranger_load_erase_persist_elt(const char *input, int elt,
                                          std::string &s)
 {
-    ranger r, e;
+    ranger<int> r, e;
     if (load(r, input) < 0) {
         emit_alert("Unexpected error loading range spec for element erase");
         return -1;
@@ -561,7 +561,7 @@ static bool test_ranger_misc_element_tmpl()
 
 static bool test_ranger_initializer_list_elements()
 {
-    ranger r = {1, 2, 3, 5, 10};
+    ranger<int> r = {1, 2, 3, 5, 10};
 
     const char *expected = "1-3;5;10";
 
@@ -585,7 +585,7 @@ static bool test_ranger_initializer_list_elements()
 
 static bool test_ranger_initializer_list_ranges()
 {
-    ranger r = {{20,30}, {40,50}, {60,80}};
+    ranger<int> r = {{20,30}, {40,50}, {60,80}};
 
     const char *expected = "20-29;40-49;60-79";
 
