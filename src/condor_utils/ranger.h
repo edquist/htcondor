@@ -134,30 +134,45 @@ struct ranger<T>::elements::iterator {
 
 // these are inline but must appear after their return type definitions
 
-ranger::elements           ranger::get_elements()    const { return *this; }
+template <class T>
+ranger<T>::elements           ranger<T>::get_elements()    const { return *this; }
 
-ranger::elements::iterator ranger::elements::begin() const { return r.begin(); }
-ranger::elements::iterator ranger::elements::end()   const { return r.end();   }
+template <class T>
+ranger<T>::elements::iterator ranger<T>::elements::begin() const { return r.begin(); }
+template <class T>
+ranger<T>::elements::iterator ranger<T>::elements::end()   const { return r.end();   }
 
-ranger::range::iterator    ranger::range::begin()    const { return _start; }
-ranger::range::iterator    ranger::range::end()      const { return _end;   }
+template <class T>
+ranger<T>::range::iterator    ranger<T>::range::begin()    const { return _start; }
+template <class T>
+ranger<T>::range::iterator    ranger<T>::range::end()      const { return _end;   }
 
-ranger::iterator           ranger::begin()   const { return forest.begin(); }
-ranger::iterator           ranger::end()     const { return forest.end();   }
+template <class T>
+ranger<T>::iterator           ranger<T>::begin()   const { return forest.begin(); }
+template <class T>
+ranger<T>::iterator           ranger<T>::end()     const { return forest.end();   }
 
-const ranger::range &ranger::front()         const { return *begin();       }
-ranger::element_type ranger::front_element() const { return front()._start; }
+template <class T>
+const ranger<T>::range &ranger<T>::front()         const { return *begin();       }
+template <class T>
+ranger<T>::element_type ranger<T>::front_element() const { return front()._start; }
 
-const ranger::range &ranger::back()          const { return *--end();       }
-ranger::element_type ranger::back_element()  const { return back().back();  }
+template <class T>
+const ranger<T>::range &ranger<T>::back()          const { return *--end();       }
+template <class T>
+ranger<T>::element_type ranger<T>::back_element()  const { return back().back();  }
 
-void ranger::insert(element_type e) { insert(range(e, e + 1)); }
-void ranger::erase(element_type e)  { erase(range(e, e + 1));  }
+template <class T>
+void ranger<T>::insert(element_type e) { insert(range(e, e + 1)); }
+template <class T>
+void ranger<T>::erase(element_type e)  { erase(range(e, e + 1));  }
 
-void ranger::insert_slice(element_type front, element_type back)
+template <class T>
+void ranger<T>::insert_slice(element_type front, element_type back)
 { insert(range(front, back + 1)); }
 
-void ranger::erase_slice(element_type front, element_type back)
+template <class T>
+void ranger<T>::erase_slice(element_type front, element_type back)
 { erase(range(front, back + 1)); }
 
 
@@ -170,12 +185,19 @@ void ranger::erase_slice(element_type front, element_type back)
 
 #include <string>
 
-void persist(std::string &s, const ranger &r);
-void persist_slice(std::string &s, const ranger &r, int start, int back);
-void persist_range(std::string &s, const ranger &r, const ranger::range &rr);
+template <class T>
+void persist(std::string &s, const ranger<T> &r);
+
+template <class T>
+void persist_slice(std::string &s, const ranger<T> &r, int start, int back);
+
+template <class T>
+void persist_range(std::string &s, const ranger<T> &r,
+                                   const ranger<T>::range &rr);
 
 // return 0 on success, (-1 - (position in string)) on parse failure
-int load(ranger &r, const char *s);
+template <class T>
+int load(ranger<T> &r, const char *s);
 
 
 #endif
