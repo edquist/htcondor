@@ -100,8 +100,8 @@ struct ranger<T>::range::iterator {
     iterator(value_type n) : i(n) {}
 
     value_type  operator*()             const {      return i;     }
-    iterator    operator+(value_type n) const {      return i+n;   }
-    iterator    operator-(value_type n) const {      return i-n;   }
+    iterator    operator+(int n)        const {      return i+n;   }
+    iterator    operator-(int n)        const {      return i-n;   }
     iterator   &operator++()                  { ++i; return *this; }
     iterator   &operator--()                  { --i; return *this; }
 
