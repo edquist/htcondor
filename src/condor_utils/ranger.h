@@ -18,11 +18,14 @@ struct ranger {
     iterator insert(range r);
     iterator erase(range r);
 
-    inline void insert(element_type e);
-    inline void erase(element_type e);
+    void insert(element_type e) { insert(range(e, e + 1)); }
+    void erase(element_type e)  { erase(range(e, e + 1));  }
 
-    inline void insert_slice(element_type front, element_type back);
-    inline void erase_slice(element_type front, element_type back);
+    void insert_slice(element_type front, element_type back)
+    { insert(range(front, back + 1)); }
+
+    void erase_slice(element_type front, element_type back)
+    { erase(range(front, back + 1)); }
 
     iterator lower_bound(element_type x) const;
     iterator upper_bound(element_type x) const;
@@ -34,16 +37,16 @@ struct ranger {
     size_t size()                 const { return forest.size(); }
     void clear()                        { forest.clear(); }
 
-    inline iterator begin() const;
-    inline iterator end()   const;
+    iterator begin() const { return forest.begin(); }
+    iterator end()   const { return forest.end(); }
 
-    inline elements get_elements() const;
+    elements get_elements() const { return *this; }
 
     // first/final range/element; do not call if empty()
-    inline const range &front()         const;
-    inline const range &back()          const;
-    inline element_type front_element() const;
-    inline element_type back_element()  const;
+    const range &front()         const { return *begin(); }
+    const range &back()          const { return *--end(); }
+    element_type front_element() const { return front().front(); }
+    element_type back_element()  const { return back().back(); }
 
     private:
     // the state of our ranger
@@ -60,6 +63,7 @@ struct ranger<T>::range {
     range(value_type e) : _start(0), _end(e) {}
     range(value_type s, value_type e) : _start(s), _end(e) {}
 
+    value_type front()            const { return _start; }
     value_type back()             const { return _end - 1; }
     value_type size()             const { return _end - _start; }
     bool contains(value_type x)   const { return _start <= x && x < _end; }
@@ -69,8 +73,8 @@ struct ranger<T>::range {
     // only for use in our disjoint ranger forest context
     bool operator< (const range &r2) const { return _end < r2._end; }
 
-    inline iterator begin() const;
-    inline iterator end()   const;
+    iterator begin() const { return _start; }
+    iterator end()   const { return _end;   }
 
     // data members; a valid range in ranger forest context has _start < _end
     mutable value_type _start;
@@ -106,8 +110,8 @@ struct ranger<T>::elements {
 
     elements(const ranger &r) : r(r) {}
 
-    inline iterator begin() const;
-    inline iterator end()   const;
+    iterator begin() const { return r.begin(); }
+    iterator end()   const { return r.end();   }
 
     const ranger &r;
 };
@@ -131,54 +135,6 @@ struct ranger<T>::elements::iterator {
     bool rit_valid;
 };
 
-
-// these are inline but must appear after their return type definitions
-
-template <class T> typename ranger<T>::elements
-ranger<T>::get_elements()    const { return *this; }
-
-template <class T> typename ranger<T>::elements::iterator
-ranger<T>::elements::begin() const { return r.begin(); }
-
-template <class T> typename ranger<T>::elements::iterator
-ranger<T>::elements::end()   const { return r.end();   }
-
-template <class T> typename ranger<T>::range::iterator
-ranger<T>::range::begin()    const { return _start; }
-
-template <class T> typename ranger<T>::range::iterator
-ranger<T>::range::end()      const { return _end;   }
-
-template <class T> typename ranger<T>::iterator
-ranger<T>::begin()   const { return forest.begin(); }
-
-template <class T> typename ranger<T>::iterator
-ranger<T>::end()     const { return forest.end();   }
-
-template <class T> const typename ranger<T>::range &
-ranger<T>::front()         const { return *begin();       }
-
-template <class T> typename ranger<T>::element_type
-ranger<T>::front_element() const { return front()._start; }
-
-template <class T> const typename ranger<T>::range &
-ranger<T>::back()          const { return *--end();       }
-
-template <class T> typename ranger<T>::element_type
-ranger<T>::back_element()  const { return back().back();  }
-
-template <class T>
-void ranger<T>::insert(element_type e) { insert(range(e, e + 1)); }
-template <class T>
-void ranger<T>::erase(element_type e)  { erase(range(e, e + 1));  }
-
-template <class T>
-void ranger<T>::insert_slice(element_type front, element_type back)
-{ insert(range(front, back + 1)); }
-
-template <class T>
-void ranger<T>::erase_slice(element_type front, element_type back)
-{ erase(range(front, back + 1)); }
 
 
 /*  persist / load ranger objects
