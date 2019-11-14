@@ -361,4 +361,5 @@ int write_element(JOB_ID_KEY in, char *buf)
 // put all explicit template instantiations here:
 
 template struct ranger<int>;
+template struct ranger<JOB_ID_KEY>;
 

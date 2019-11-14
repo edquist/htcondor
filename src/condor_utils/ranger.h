@@ -79,12 +79,11 @@ struct ranger<T>::range {
     struct iterator;
     typedef ranger::element_type value_type;
 
-    range(value_type e) : _start(0), _end(e) {}
+    range(value_type e) : _start(), _end(e) {}
     range(value_type s, value_type e) : _start(s), _end(e) {}
 
     value_type front()            const { return _start; }
     value_type back()             const { return _end - 1; }
-    value_type size()             const { return _end - _start; }
     bool contains(value_type x)   const { return _start <= x && x < _end; }
     bool contains(const range &r) const
     { return _start <= r._start && r._end < _end; }
@@ -104,7 +103,7 @@ template <class T>
 struct ranger<T>::range::iterator {
     typedef ranger::element_type value_type;
 
-    iterator() : i(0) {}
+    iterator() : i() {}
     iterator(value_type n) : i(n) {}
 
     value_type  operator*()             const {      return i;     }
@@ -113,8 +112,8 @@ struct ranger<T>::range::iterator {
     iterator   &operator++()                  { ++i; return *this; }
     iterator   &operator--()                  { --i; return *this; }
 
-    // takes care of rel ops :D
-    operator value_type()               const {      return i;     }
+    bool operator==(const iterator &b)  const { return i == b.i;   }
+    bool operator!=(const iterator &b)  const { return i != b.i;   }
 
     // this is both the iterator "position" and the value
     value_type i;

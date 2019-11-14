@@ -11,10 +11,20 @@ struct JOB_ID_KEY {
         return diff < 0;
     }
 
+    JOB_ID_KEY operator+(int i) const { return {cluster, proc + i}; }
+    JOB_ID_KEY operator-(int i) const { return {cluster, proc - i}; }
+
+    JOB_ID_KEY &operator++() { ++proc; return *this; }
+    JOB_ID_KEY &operator--() { --proc; return *this; }
+
     JOB_ID_KEY() : cluster(0), proc(0) {}
     JOB_ID_KEY(int c, int p) : cluster(c), proc(p) {}
-};
 
-inline bool operator==( const JOB_ID_KEY a, const JOB_ID_KEY b)
-{ return a.cluster == b.cluster && a.proc == b.proc; }
+
+    bool operator==(const JOB_ID_KEY &b) const
+    { return cluster == b.cluster && proc == b.proc; }
+
+    bool operator!=(const JOB_ID_KEY &b) const { return !(*this == b); }
+    bool operator<=(const JOB_ID_KEY &b) const { return !(b < *this);  }
+};
 
