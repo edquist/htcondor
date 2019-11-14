@@ -64,6 +64,7 @@ struct ranger {
     void persist_slice(std::string &s, element_type start,
                                        element_type back) const;
 
+    // insert sub-ranges serialized in s
     // return 0 on success, (-1 - (position in string)) on parse failure
     int load(const char *s);
 
@@ -82,8 +83,9 @@ struct ranger<T>::range {
     range(value_type e) : _start(), _end(e) {}
     range(value_type s, value_type e) : _start(s), _end(e) {}
 
-    value_type front()            const { return _start; }
+    value_type front()            const { return _start;   }
     value_type back()             const { return _end - 1; }
+
     bool contains(value_type x)   const { return _start <= x && x < _end; }
     bool contains(const range &r) const
     { return _start <= r._start && r._end < _end; }
