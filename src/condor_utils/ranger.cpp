@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "ranger.h"
+#include "proc.h"
 
 
 ///// ranger insert/erase/find implementation /////
@@ -236,16 +237,25 @@ bool ranger<T>::elements::iterator::operator!=(iterator &it)
  *  integer.  Eg, "2", "5-10", "4;7;10-20;44;50-60"
  */
 
+
+static inline char *read_element(const char *s, int *out);
+static inline int write_element(int in, char *buf);
+
+static inline char *read_element(const char *s, JOB_ID_KEY *out);
+static inline int write_element(JOB_ID_KEY in, char *buf);
+
 template <class T>
 static
 void persist_range_single(std::string &s, const typename ranger<T>::range &rr)
 {
     char buf[64];
     int n;
-    if (rr._start == rr._end - 1)
-        n = sprintf(buf, "%d;", rr._start);
-    else
-        n = sprintf(buf, "%d-%d;", rr._start, rr._end - 1);
+    n = write_element(rr._start, buf);
+    if (rr._start != rr._end - 1) {
+        buf[n++] = '-';
+        n += write_element(rr._end - 1, buf+n);
+    }
+    buf[n++] = ';';
     s.append(buf, n);
 }
 
@@ -292,16 +302,15 @@ int ranger<T>::load(const char *s)
 {
     const char *sstart = s;
     while (*s) {
-        char *sp;
-        int start = strtol(s, &sp, 10);
-        int back;
+        int start, back;
+        char *sp = read_element(s, &start);
         if (s == sp)
             // no int parsed is ok as long as we're at the end
             return *s ? -1 - int(s - sstart) : 0;
         s = sp;
         if (*sp == '-') {
             s++;
-            back = strtol(s, &sp, 10);
+            sp = read_element(s, &back);
             if (s == sp)
                 // a number should have followed '-'
                 return -1 - int(s - sstart);
@@ -317,6 +326,34 @@ int ranger<T>::load(const char *s)
         insert({start, back + 1});
     }
     return 0;
+}
+
+
+
+// extract element from string s, output to out, return pos after element
+char *read_element(const char *s, int *out)
+{
+    char *ret;
+    *out = strtol(s, &ret, 10);
+    return ret;
+}
+
+// write 'in' to buf, return number of bytes written
+int write_element(int in, char *buf)
+{
+    return sprintf(buf, "%d", in);
+}
+
+
+char *read_element(const char *s, JOB_ID_KEY *out)
+{
+    int len, ret = sscanf(s, "%d.%d%n", &out->cluster, &out->proc, &len);
+    return const_cast<char *>(ret != 2 ? s : s + len);
+}
+
+int write_element(JOB_ID_KEY in, char *buf)
+{
+    return sprintf(buf, "%d.%d", in.cluster, in.proc);
 }
 
 
