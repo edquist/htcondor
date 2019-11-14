@@ -50,7 +50,15 @@ struct ranger {
     element_type back_element()  const { return back().back(); }
 
 
-    // persist / load ranger objects
+
+
+/*  persist / load ranger objects
+ *
+ *  The serialized format is one or more sub-ranges, separated by semicolons,
+ *  where each sub-range is either N-M (for inclusive N..M) or N for a single
+ *  integer.  Eg, "2", "5-10", "4;7;10-20;44;50-60"
+ */
+
     void persist(std::string &s) const;
     void persist_range(std::string &s, const range &rr) const;
     void persist_slice(std::string &s, element_type start,
@@ -144,13 +152,5 @@ struct ranger<T>::elements::iterator {
     bool rit_valid;
 };
 
-
-
-/*  persist / load ranger objects
- *
- *  The serialized format is one or more sub-ranges, separated by semicolons,
- *  where each sub-range is either N-M (for inclusive N..M) or N for a single
- *  integer.  Eg, "2", "5-10", "4;7;10-20;44;50-60"
- */
 
 #endif
