@@ -19,14 +19,14 @@ struct ranger {
     iterator insert(range r);
     iterator erase(range r);
 
-    void insert(element_type e) { insert(range(e, e + 1)); }
-    void erase(element_type e)  { erase(range(e, e + 1));  }
+    iterator insert(element_type e) { return insert(range(e, e + 1)); }
+    iterator erase(element_type e)  { return erase(range(e, e + 1));  }
 
-    void insert_slice(element_type front, element_type back)
-    { insert(range(front, back + 1)); }
+    iterator insert_slice(element_type front, element_type back)
+    { return insert(range(front, back + 1)); }
 
-    void erase_slice(element_type front, element_type back)
-    { erase(range(front, back + 1)); }
+    iterator erase_slice(element_type front, element_type back)
+    { return erase(range(front, back + 1)); }
 
     iterator lower_bound(element_type x) const;
     iterator upper_bound(element_type x) const;
