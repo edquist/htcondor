@@ -91,14 +91,14 @@ bool ranger<T>::contains(element_type x) const
 }
 
 template <class T>
-ranger<T>::ranger(const std::initializer_list<ranger<T>::range> &il)
+ranger<T>::ranger(const std::initializer_list<range> &il)
 {
     for (const range &rr : il)
         insert(rr);
 }
 
 template <class T>
-ranger<T>::ranger(const std::initializer_list<ranger<T>::element_type> &il)
+ranger<T>::ranger(const std::initializer_list<element_type> &il)
 {
     for (const element_type &e : il)
         insert(e);
