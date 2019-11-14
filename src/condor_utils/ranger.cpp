@@ -1,6 +1,7 @@
 #include "condor_common.h"
 
 #include <algorithm>
+#include <utility>
 #include "ranger.h"
 #include "proc.h"
 
@@ -11,6 +12,8 @@
 template <class T>
 typename ranger<T>::iterator ranger<T>::insert(range r)
 {
+    using namespace std::rel_ops;
+
     // lower_bound here will coalesce an adjacent disjoint range;
     // can use upper_bound instead to avoid this and leave them fractured
     iterator it_start = lower_bound(r._start);
@@ -38,6 +41,8 @@ typename ranger<T>::iterator ranger<T>::insert(range r)
 template <class T>
 typename ranger<T>::iterator ranger<T>::erase(range r)
 {
+    using namespace std::rel_ops;
+
     iterator it_start = upper_bound(r._start);
     iterator it = it_start;
     while (it != end() && it->_start < r._end)
@@ -73,6 +78,8 @@ template <class T>
 std::pair<typename ranger<T>::iterator, bool>
 ranger<T>::find(element_type x) const
 {
+    using namespace std::rel_ops;
+
     iterator it = upper_bound(x);
     return {it, it != end() && it->_start <= x};
 }
@@ -248,6 +255,8 @@ template <class T>
 static
 void persist_range_single(std::string &s, const typename ranger<T>::range &rr)
 {
+    using namespace std::rel_ops;
+
     char buf[64];
     int n;
     n = write_element(rr._start, buf);

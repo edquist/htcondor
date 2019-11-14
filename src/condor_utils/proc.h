@@ -23,8 +23,5 @@ struct JOB_ID_KEY {
 
     bool operator==(const JOB_ID_KEY &b) const
     { return cluster == b.cluster && proc == b.proc; }
-
-    bool operator!=(const JOB_ID_KEY &b) const { return !(*this == b); }
-    bool operator<=(const JOB_ID_KEY &b) const { return !(b < *this);  }
 };
 

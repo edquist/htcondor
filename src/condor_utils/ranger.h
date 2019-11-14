@@ -86,9 +86,9 @@ struct ranger<T>::range {
     value_type front()            const { return _start;   }
     value_type back()             const { return _end - 1; }
 
-    bool contains(value_type x)   const { return _start <= x && x < _end; }
+    bool contains(value_type x)   const { return !(x < _start) && x < _end; }
     bool contains(const range &r) const
-    { return _start <= r._start && r._end < _end; }
+    { return !(r._start < _start) && r._end < _end; }
 
     // only for use in our disjoint ranger forest context
     bool operator< (const range &r2) const { return _end < r2._end; }
@@ -115,7 +115,7 @@ struct ranger<T>::range::iterator {
     iterator   &operator--()                  { --i; return *this; }
 
     bool operator==(const iterator &b)  const { return i == b.i;   }
-    bool operator!=(const iterator &b)  const { return i != b.i;   }
+    bool operator!=(const iterator &b)  const { return !(i==b.i);  }
 
     // this is both the iterator "position" and the value
     value_type i;
