@@ -9,8 +9,8 @@
 ///// ranger insert/erase/find implementation /////
 
 
-template <class T>
-typename ranger<T>::iterator ranger<T>::insert(range r)
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::iterator ranger<E,F>::insert(range r)
 {
     using namespace std::rel_ops;
 
@@ -38,8 +38,8 @@ typename ranger<T>::iterator ranger<T>::insert(range r)
     return it_start == it_back ? it_back : forest.erase(it_start, it_back);
 }
 
-template <class T>
-typename ranger<T>::iterator ranger<T>::erase(range r)
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::iterator ranger<E,F>::erase(range r)
 {
     using namespace std::rel_ops;
 
@@ -74,9 +74,9 @@ typename ranger<T>::iterator ranger<T>::erase(range r)
     return it_start == it_end ? it_end : forest.erase(it_start, it_end);
 }
 
-template <class T>
-std::pair<typename ranger<T>::iterator, bool>
-ranger<T>::find(element_type x) const
+template <class E, ranger_forest_type F>
+std::pair<typename ranger<E,F>::iterator, bool>
+ranger<E,F>::find(element_type x) const
 {
     using namespace std::rel_ops;
 
@@ -84,21 +84,21 @@ ranger<T>::find(element_type x) const
     return {it, it != end() && it->_start <= x};
 }
 
-template <class T>
-bool ranger<T>::contains(element_type x) const
+template <class E, ranger_forest_type F>
+bool ranger<E,F>::contains(element_type x) const
 {
     return find(x).second;
 }
 
-template <class T>
-ranger<T>::ranger(const std::initializer_list<range> &il)
+template <class E, ranger_forest_type F>
+ranger<E,F>::ranger(const std::initializer_list<range> &il)
 {
     for (const range &rr : il)
         insert(rr);
 }
 
-template <class T>
-ranger<T>::ranger(const std::initializer_list<element_type> &il)
+template <class E, ranger_forest_type F>
+ranger<E,F>::ranger(const std::initializer_list<element_type> &il)
 {
     for (const element_type &e : il)
         insert(e);
@@ -106,46 +106,50 @@ ranger<T>::ranger(const std::initializer_list<element_type> &il)
 
 
 // specialize for std::set containers to use std::set::lower_bound
-template <class T>
-static inline typename std::set<typename ranger<T>::range>::const_iterator
-lower_bounder(const typename std::set<typename ranger<T>::range> &f,
-                                      typename ranger<T>::range rr)
+template <class R>
+static inline
+typename std::set<R>::const_iterator
+lower_bounder(const std::set<R> &f, const R &r)
 {
-    return f.lower_bound(rr);
+    return f.lower_bound(r);
 }
 
-template <class T>
-static inline typename std::set<typename ranger<T>::range>::const_iterator
-upper_bounder(const typename std::set<typename ranger<T>::range> &f,
-                                      typename ranger<T>::range rr)
+template <class R>
+static inline
+typename std::set<R>::const_iterator
+upper_bounder(const std::set<R> &f, const R &r)
 {
-    return f.upper_bound(rr);
+    return f.upper_bound(r);
 }
 
 // generic containers (other than std::set) use std::lower_bound
-template <class C, class T> static inline typename C::const_iterator
-lower_bounder(const C &f, typename ranger<T>::range rr)
+template <class C, class R>
+static inline
+typename C::const_iterator
+lower_bounder(const C &f, const R &r)
 {
-    return std::lower_bound(f.begin(), f.end(), rr);
+    return std::lower_bound(f.begin(), f.end(), r);
 }
 
-template <class C, class T> static inline typename C::const_iterator
-upper_bounder(const C &f, typename ranger<T>::range rr)
+template <class C, class R>
+static inline
+typename C::const_iterator
+upper_bounder(const C &f, const R &r)
 {
-    return std::upper_bound(f.begin(), f.end(), rr);
+    return std::upper_bound(f.begin(), f.end(), r);
 }
 
 
-template <class T>
-typename ranger<T>::iterator ranger<T>::lower_bound(element_type x) const
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::iterator ranger<E,F>::lower_bound(element_type x) const
 {
-    return lower_bounder<forest_type,T>(forest, x);
+    return lower_bounder(forest, range(x));
 }
 
-template <class T>
-typename ranger<T>::iterator ranger<T>::upper_bound(element_type x) const
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::iterator ranger<E,F>::upper_bound(element_type x) const
 {
-    return upper_bounder<forest_type,T>(forest, x);
+    return upper_bounder(forest, range(x));
 }
 
 
@@ -166,8 +170,8 @@ typename ranger<T>::iterator ranger<T>::upper_bound(element_type x) const
  *              process_int(i);
  */
 
-template <class T>
-void ranger<T>::elements::iterator::mk_valid()
+template <class E, ranger_forest_type F>
+void ranger<E,F>::elements::iterator::mk_valid()
 {
     if (!rit_valid) {
         rit = sit->begin();
@@ -175,17 +179,17 @@ void ranger<T>::elements::iterator::mk_valid()
     }
 }
 
-template <class T>
-typename ranger<T>::element_type
-ranger<T>::elements::iterator::operator*()
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::element_type
+ranger<E,F>::elements::iterator::operator*()
 {
     mk_valid();
     return *rit;
 }
 
-template <class T>
-typename ranger<T>::elements::iterator &
-ranger<T>::elements::iterator::operator++()
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::elements::iterator &
+ranger<E,F>::elements::iterator::operator++()
 {
     mk_valid();
     if (++rit == sit->end()) {
@@ -195,9 +199,9 @@ ranger<T>::elements::iterator::operator++()
     return *this;
 }
 
-template <class T>
-typename ranger<T>::elements::iterator &
-ranger<T>::elements::iterator::operator--()
+template <class E, ranger_forest_type F>
+typename ranger<E,F>::elements::iterator &
+ranger<E,F>::elements::iterator::operator--()
 {
     mk_valid();
     if (rit == sit->begin()) {
@@ -208,8 +212,8 @@ ranger<T>::elements::iterator::operator--()
     return *this;
 }
 
-template <class T>
-bool ranger<T>::elements::iterator::operator==(iterator &it)
+template <class E, ranger_forest_type F>
+bool ranger<E,F>::elements::iterator::operator==(iterator &it)
 {
     if (sit != it.sit)
         return false;
@@ -222,8 +226,8 @@ bool ranger<T>::elements::iterator::operator==(iterator &it)
     return rit == it.rit;
 }
 
-template <class T>
-bool ranger<T>::elements::iterator::operator!=(iterator &it)
+template <class E, ranger_forest_type F>
+bool ranger<E,F>::elements::iterator::operator!=(iterator &it)
 {
     return !(*this == it);
 }
@@ -251,9 +255,9 @@ static inline int write_element(int in, char *buf);
 static inline char *read_element(const char *s, JOB_ID_KEY *out);
 static inline int write_element(JOB_ID_KEY in, char *buf);
 
-template <class T>
+template <class E, ranger_forest_type F>
 static
-void persist_range_single(std::string &s, const typename ranger<T>::range &rr)
+void persist_range_single(std::string &s, const typename ranger<E,F>::range &rr)
 {
     using namespace std::rel_ops;
 
@@ -268,21 +272,21 @@ void persist_range_single(std::string &s, const typename ranger<T>::range &rr)
     s.append(buf, n);
 }
 
-template <class T>
-void ranger<T>::persist(std::string &s) const
+template <class E, ranger_forest_type F>
+void ranger<E,F>::persist(std::string &s) const
 {
     s.clear();
     if (empty())
         return;
 
     for (auto &rr : *this)
-        persist_range_single<T>(s, rr);
+        persist_range_single<E,F>(s, rr);
 
     s.erase(s.size() - 1);
 }
 
-template <class T>
-void ranger<T>::persist_range(std::string &s, const range &rr) const
+template <class E, ranger_forest_type F>
+void ranger<E,F>::persist_range(std::string &s, const range &rr) const
 {
     s.clear();
     if (empty())
@@ -290,24 +294,24 @@ void ranger<T>::persist_range(std::string &s, const range &rr) const
 
     auto rit = find(rr._start).first;
     for (; rit != end() && rit->_start < rr._end; ++rit) {
-        typename ranger<T>::range rr_new = { std::max(rit->_start, rr._start),
-                                             std::min(rit->_end,   rr._end) };
-        persist_range_single<T>(s, rr_new);
+        typename ranger<E,F>::range rr_new = {std::max(rit->_start, rr._start),
+                                              std::min(rit->_end,   rr._end)};
+        persist_range_single<E,F>(s, rr_new);
     }
 
     s.erase(s.size() - 1);
 }
 
-template <class T>
-void ranger<T>::persist_slice(std::string &s, element_type start,
+template <class E, ranger_forest_type F>
+void ranger<E,F>::persist_slice(std::string &s, element_type start,
                                               element_type back) const
 {
     persist_range(s, {start, back+1});
 }
 
 // return 0 on success, (-1 - (position in string)) on parse failure
-template <class T>
-int ranger<T>::load(const char *s)
+template <class E, ranger_forest_type F>
+int ranger<E,F>::load(const char *s)
 {
     const char *sstart = s;
     while (*s) {
@@ -371,4 +375,7 @@ int write_element(JOB_ID_KEY in, char *buf)
 
 template struct ranger<int>;
 template struct ranger<JOB_ID_KEY>;
+
+template struct ranger<int, RangeVector>;
+template struct ranger<JOB_ID_KEY, RangeVector>;
 

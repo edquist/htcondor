@@ -4,13 +4,24 @@
 #include <set>
 #include <string>
 
-template <class T>
+enum ranger_forest_type { RangeSet, RangeVector };
+
+template <ranger_forest_type F, class R>
+struct ranger_forest_t;
+
+template <class R>
+struct ranger_forest_t<RangeSet,R>    { typedef std::set<R> type;    };
+
+template <class R>
+struct ranger_forest_t<RangeVector,R> { typedef std::vector<R> type; };
+
+template <class E, ranger_forest_type F = RangeSet>
 struct ranger {
     struct range;
     struct elements;
-    typedef T                                    element_type;
-    typedef std::set<range>                      forest_type;
-    typedef typename forest_type::const_iterator iterator;
+    typedef E                                       element_type;
+    typedef typename ranger_forest_t<F,range>::type forest_type;
+    typedef typename forest_type::const_iterator    iterator;
 
     ranger() {};
     ranger(const std::initializer_list<range> &il);
@@ -75,8 +86,8 @@ struct ranger {
 
 typedef ranger<int> range_mask;
 
-template <class T>
-struct ranger<T>::range {
+template <class E, ranger_forest_type F>
+struct ranger<E,F>::range {
     struct iterator;
     typedef ranger::element_type value_type;
 
@@ -101,8 +112,8 @@ struct ranger<T>::range {
     mutable value_type _end;
 };
 
-template <class T>
-struct ranger<T>::range::iterator {
+template <class E, ranger_forest_type F>
+struct ranger<E,F>::range::iterator {
     typedef ranger::element_type value_type;
 
     iterator() : i() {}
@@ -121,8 +132,8 @@ struct ranger<T>::range::iterator {
     value_type i;
 };
 
-template <class T>
-struct ranger<T>::elements {
+template <class E, ranger_forest_type F>
+struct ranger<E,F>::elements {
     struct iterator;
     typedef ranger::element_type value_type;
 
@@ -134,8 +145,8 @@ struct ranger<T>::elements {
     const ranger &r;
 };
 
-template <class T>
-struct ranger<T>::elements::iterator {
+template <class E, ranger_forest_type F>
+struct ranger<E,F>::elements::iterator {
     iterator(ranger::iterator si) : sit(si), rit_valid(0) {}
     iterator() : rit_valid(0) {}
 
