@@ -33,7 +33,7 @@ struct ranger {
 
     std::pair<iterator, bool> find(element_type x) const;
 
-    bool contains(element_type x) const;
+    bool contains(element_type x) const { return find(x).second; }
     bool empty()                  const { return forest.empty(); }
     size_t size()                 const { return forest.size(); }
     void clear()                        { forest.clear(); }

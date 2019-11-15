@@ -81,12 +81,6 @@ ranger<T>::find(element_type x) const
 }
 
 template <class T>
-bool ranger<T>::contains(element_type x) const
-{
-    return find(x).second;
-}
-
-template <class T>
 ranger<T>::ranger(const std::initializer_list<range> &il)
 {
     for (const range &rr : il)
