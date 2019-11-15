@@ -317,6 +317,61 @@ void driver_register_all5<TEST_TABLE5_COUNT>(FunctionDriver &driver)
 }
 
 
+struct testcase6 {
+    const char *input;
+    JOB_ID_KEY element;
+    bool expected_result;
+};
+
+// test cases for contains (element)
+const testcase6 test_table6[] = {
+    {"",                       {1,123},  false},
+    {"1.10-1.20",              {1,123},  false},
+    {"1.10-1.20",              {1,  5},  false},
+    {"1.10-1.20",              {1,  9},  false},
+    {"1.10-1.20",              {1, 10},  true },
+    {"1.10-1.20",              {1, 11},  true },
+    {"1.10-1.20",              {1, 19},  true },
+    {"1.10-1.20",              {1, 20},  true },
+    {"1.10-1.20",              {1, 21},  false},
+    {"1.10-1.20",              {1, 22},  false},
+    {"1.10-1.20;1.30-1.40",    {1,123},  false},
+    {"1.10-1.20;1.30-1.40",    {1,  5},  false},
+    {"1.10-1.20;1.30-1.40",    {1,  9},  false},
+    {"1.10-1.20;1.30-1.40",    {1, 10},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 11},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 19},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 20},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 21},  false},
+    {"1.10-1.20;1.30-1.40",    {1, 22},  false},
+    {"1.10-1.20;1.30-1.40",    {1, 29},  false},
+    {"1.10-1.20;1.30-1.40",    {1, 30},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 31},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 39},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 40},  true },
+    {"1.10-1.20;1.30-1.40",    {1, 41},  false},
+    {"1.10-1.20;1.30-1.40",    {1, 42},  false},
+};
+
+static const int TEST_TABLE6_COUNT = sizeof test_table6 / sizeof test_table6[0];
+
+template <int N>
+static bool test_ranger_misc_contains_jobid_tmpl();
+
+template <int N>
+static void driver_register_all6(FunctionDriver &driver)
+{
+    driver.register_function(test_ranger_misc_contains_jobid_tmpl<N>);
+    driver_register_all6<N+1>(driver);
+}
+
+template <>
+void driver_register_all6<TEST_TABLE6_COUNT>(FunctionDriver &driver)
+{
+    (void) driver;
+}
+
+
 //////////////////////////////////////////////
 
 static bool test_ranger_initializer_list_elements();
@@ -334,6 +389,7 @@ bool OTEST_ranger(void) {
     driver_register_all3<0>(driver);
     driver_register_all4<0>(driver);
     driver_register_all5<0>(driver);
+    driver_register_all6<0>(driver);
 
     driver.register_function(test_ranger_initializer_list_elements);
     driver.register_function(test_ranger_initializer_list_ranges);
@@ -697,3 +753,47 @@ static bool test_ranger_misc_jobid_persist_load_tmpl()
 
 
 //////////////////
+
+
+// test a row in the test case table (contains jobid)
+
+static bool test_ranger_misc_contains_jobid(int N)
+{
+    char elementbuf[64];
+    const testcase6 &t = test_table6[N];
+
+    sprintf(elementbuf, "%d.%d", t.element.cluster, t.element.proc);
+
+    emit_test("Test misc ranger contains jobid element");
+    emit_input_header();
+    emit_param("Input", t.input);
+    emit_param("Element", elementbuf);
+
+    ranger<JOB_ID_KEY> r;
+    if (r.load(t.input)) {
+        emit_alert("Unexpected error loading range spec for contains");
+        FAIL;
+    }
+    bool contains_element = r.contains(t.element);
+
+    emit_output_expected_header();
+    emit_retval(boolstr(t.expected_result));
+
+    emit_output_actual_header();
+    emit_retval(boolstr(contains_element));
+
+    if (contains_element != t.expected_result)
+        FAIL;
+    PASS;
+}
+
+
+template <int N>
+static bool test_ranger_misc_contains_jobid_tmpl()
+{
+    return test_ranger_misc_contains_jobid(N);
+}
+
+
+//////////////////
+
