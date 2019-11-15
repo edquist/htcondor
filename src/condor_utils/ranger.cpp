@@ -299,7 +299,7 @@ int ranger<T>::load(const char *s)
 {
     const char *sstart = s;
     while (*s) {
-        int start, back;
+        element_type start, back;
         char *sp = read_element(s, &start);
         if (s == sp)
             // no int parsed is ok as long as we're at the end
