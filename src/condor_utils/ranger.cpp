@@ -231,15 +231,38 @@ bool ranger<T>::elements::iterator::operator!=(iterator &it)
  *
  *  The serialized format is one or more sub-ranges, separated by semicolons,
  *  where each sub-range is either N-M (for inclusive N..M) or N for a single
- *  integer.  Eg, "2", "5-10", "4;7;10-20;44;50-60"
+ *  element.  Eg, "2", "5-10", "4;7;10-20;44;50-60"
  */
 
 
-static inline char *read_element(const char *s, int *out);
-static inline int write_element(int in, char *buf);
+// define read_element & write_element for each desired element type
 
-static inline char *read_element(const char *s, JOB_ID_KEY *out);
-static inline int write_element(JOB_ID_KEY in, char *buf);
+// extract element from string s, output to out, return pos after element
+static char *read_element(const char *s, int *out)
+{
+    char *ret;
+    *out = strtol(s, &ret, 10);
+    return ret;
+}
+
+// write 'in' to buf, return number of bytes written
+static int write_element(int in, char *buf)
+{
+    return sprintf(buf, "%d", in);
+}
+
+
+static char *read_element(const char *s, JOB_ID_KEY *out)
+{
+    int len, ret = sscanf(s, "%d.%d%n", &out->cluster, &out->proc, &len);
+    return const_cast<char *>(ret != 2 ? s : s + len);
+}
+
+static int write_element(JOB_ID_KEY in, char *buf)
+{
+    return sprintf(buf, "%d.%d", in.cluster, in.proc);
+}
+
 
 template <class T>
 static
@@ -327,35 +350,7 @@ int ranger<T>::load(const char *s)
 
 
 
-// extract element from string s, output to out, return pos after element
-char *read_element(const char *s, int *out)
-{
-    char *ret;
-    *out = strtol(s, &ret, 10);
-    return ret;
-}
-
-// write 'in' to buf, return number of bytes written
-int write_element(int in, char *buf)
-{
-    return sprintf(buf, "%d", in);
-}
-
-
-char *read_element(const char *s, JOB_ID_KEY *out)
-{
-    int len, ret = sscanf(s, "%d.%d%n", &out->cluster, &out->proc, &len);
-    return const_cast<char *>(ret != 2 ? s : s + len);
-}
-
-int write_element(JOB_ID_KEY in, char *buf)
-{
-    return sprintf(buf, "%d.%d", in.cluster, in.proc);
-}
-
-
-
-// put all explicit template instantiations here:
+// need exactly one explicit template instantiation per desired element type:
 
 template struct ranger<int>;
 template struct ranger<JOB_ID_KEY>;
