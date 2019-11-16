@@ -29,6 +29,10 @@
 #include "ranger.h"
 #include "proc.h"
 
+
+/////////////
+
+
 enum Action { Erase, Insert };
 
 struct testcase1 {
@@ -68,6 +72,7 @@ const testcase1 test_table1[] = {
 
 /////////////
 
+
 struct testcase2 {
     const char *input;
     struct { int start, back; };
@@ -91,6 +96,9 @@ const testcase2 test_table2[] = {
     {"10-20;30-40;50-60", {30,39}, "30-39"            },
     {"10-20;30-40;50-60", {31,39}, "31-39"            }
 };
+
+
+/////////////
 
 
 struct testcase3 {
@@ -151,6 +159,8 @@ const testcase3 test_table3[] = {
 };
 
 
+/////////////
+
 
 struct testcase4 {
     Action action;
@@ -201,11 +211,13 @@ const testcase4 test_table4[] = {
 };
 
 
-//////////////////////////////////////////////
+/////////////
 
+
+using testcase5 = testcase1;
 
 // test cases for load, insert/erase, persist -- job ids
-const testcase1 test_table5[] = {
+const testcase5 test_table5[] = {
     {Insert, "2.1",                    "2.1"                                },
     {Insert, "2.1",                    "2.1"                                },
     {Insert, "3.5-3.10",               "2.1;3.5-3.10"                       },
@@ -218,6 +230,8 @@ const testcase1 test_table5[] = {
     {Erase,  "2.1",                    "5.2-5.9"                            }
 };
 
+
+/////////////
 
 
 struct testcase6 {
@@ -259,6 +273,7 @@ const testcase6 test_table6[] = {
 
 //////////////////////////////////////////////
 
+
 // do some template magic to automatically register one
 // test function per test case in the above tables
 
@@ -291,12 +306,14 @@ void driver_register_all##n<TEST_TABLE##n##_COUNT>(FunctionDriver &driver)    \
 }                                                                             \
                                                                               \
 
+// one for each test_tableN and corresponding test function
 TEST_TABLE_SETUP(1, test_ranger_misc_persist_load)
 TEST_TABLE_SETUP(2, test_ranger_misc_load_persist_slice)
 TEST_TABLE_SETUP(3, test_ranger_misc_contains)
 TEST_TABLE_SETUP(4, test_ranger_misc_element)
 TEST_TABLE_SETUP(5, test_ranger_misc_jobid_persist_load)
 TEST_TABLE_SETUP(6, test_ranger_misc_contains_jobid)
+
 
 //////////////////////////////////////////////
 
@@ -313,6 +330,8 @@ bool OTEST_ranger(void) {
         "mask objects, testing the load and persist functionality.");
 
     FunctionDriver driver;
+
+    // one of these per TEST_TABLE_SETUP(N, ...) above
     driver_register_all1<0>(driver);
     driver_register_all2<0>(driver);
     driver_register_all3<0>(driver);
@@ -611,7 +630,7 @@ static bool test_ranger_initializer_list_ranges()
 static bool test_ranger_misc_jobid_persist_load(int N)
 {
     const char *prev = N > 0 ? test_table5[N-1].expected_result : "";
-    const testcase1 &t = test_table5[N];
+    const testcase5 &t = test_table5[N];
     std::string s;
     s.reserve(256);
 
