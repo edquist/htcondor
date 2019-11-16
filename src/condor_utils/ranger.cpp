@@ -238,7 +238,7 @@ bool ranger<T>::elements::iterator::operator!=(iterator &it)
 // define read_element & write_element for each desired element type
 
 // extract element from string s, output to out, return pos after element
-static char *read_element(const char *s, int *out)
+static const char *read_element(const char *s, int *out)
 {
     char *ret;
     *out = strtol(s, &ret, 10);
@@ -252,10 +252,10 @@ static int write_element(int in, char *buf)
 }
 
 
-static char *read_element(const char *s, JOB_ID_KEY *out)
+static const char *read_element(const char *s, JOB_ID_KEY *out)
 {
     int len, ret = sscanf(s, "%d.%d%n", &out->cluster, &out->proc, &len);
-    return const_cast<char *>(ret != 2 ? s : s + len);
+    return ret != 2 ? s : s + len;
 }
 
 static int write_element(JOB_ID_KEY in, char *buf)
@@ -323,7 +323,7 @@ int ranger<T>::load(const char *s)
     const char *sstart = s;
     while (*s) {
         element_type start, back;
-        char *sp = read_element(s, &start);
+        const char *sp = read_element(s, &start);
         if (s == sp)
             // no int parsed is ok as long as we're at the end
             return *s ? -1 - int(s - sstart) : 0;
