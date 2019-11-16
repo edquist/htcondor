@@ -66,28 +66,7 @@ const testcase1 test_table1[] = {
 };
 
 
-static const int TEST_TABLE1_COUNT = sizeof test_table1 / sizeof test_table1[0];
-
-
-// do some template magic to automatically register one
-// test function per test case in the above table
-
-template <int N>
-static bool test_ranger_misc_persist_load_tmpl();
-
-template <int N>
-static void driver_register_all1(FunctionDriver &driver)
-{
-    driver.register_function(test_ranger_misc_persist_load_tmpl<N>);
-    driver_register_all1<N+1>(driver);
-}
-
-template <>
-void driver_register_all1<TEST_TABLE1_COUNT>(FunctionDriver &driver)
-{
-    (void) driver;
-}
-
+/////////////
 
 struct testcase2 {
     const char *input;
@@ -112,24 +91,6 @@ const testcase2 test_table2[] = {
     {"10-20;30-40;50-60", {30,39}, "30-39"            },
     {"10-20;30-40;50-60", {31,39}, "31-39"            }
 };
-
-static const int TEST_TABLE2_COUNT = sizeof test_table2 / sizeof test_table2[0];
-
-template <int N>
-static bool test_ranger_misc_load_persist_slice_tmpl();
-
-template <int N>
-static void driver_register_all2(FunctionDriver &driver)
-{
-    driver.register_function(test_ranger_misc_load_persist_slice_tmpl<N>);
-    driver_register_all2<N+1>(driver);
-}
-
-template <>
-void driver_register_all2<TEST_TABLE2_COUNT>(FunctionDriver &driver)
-{
-    (void) driver;
-}
 
 
 struct testcase3 {
@@ -189,23 +150,6 @@ const testcase3 test_table3[] = {
     {"10-20;22-30",         23,  true }
 };
 
-static const int TEST_TABLE3_COUNT = sizeof test_table3 / sizeof test_table3[0];
-
-template <int N>
-static bool test_ranger_misc_contains_tmpl();
-
-template <int N>
-static void driver_register_all3(FunctionDriver &driver)
-{
-    driver.register_function(test_ranger_misc_contains_tmpl<N>);
-    driver_register_all3<N+1>(driver);
-}
-
-template <>
-void driver_register_all3<TEST_TABLE3_COUNT>(FunctionDriver &driver)
-{
-    (void) driver;
-}
 
 
 struct testcase4 {
@@ -257,27 +201,8 @@ const testcase4 test_table4[] = {
 };
 
 
-static const int TEST_TABLE4_COUNT = sizeof test_table4 / sizeof test_table4[0];
-
-
-template <int N>
-static bool test_ranger_misc_element_tmpl();
-
-template <int N>
-static void driver_register_all4(FunctionDriver &driver)
-{
-    driver.register_function(test_ranger_misc_element_tmpl<N>);
-    driver_register_all4<N+1>(driver);
-}
-
-template <>
-void driver_register_all4<TEST_TABLE4_COUNT>(FunctionDriver &driver)
-{
-    (void) driver;
-}
-
-
 //////////////////////////////////////////////
+
 
 // test cases for load, insert/erase, persist -- job ids
 const testcase1 test_table5[] = {
@@ -293,28 +218,6 @@ const testcase1 test_table5[] = {
     {Erase,  "2.1",                    "5.2-5.9"                            }
 };
 
-
-static const int TEST_TABLE5_COUNT = sizeof test_table5 / sizeof test_table5[0];
-
-
-// do some template magic to automatically register one
-// test function per test case in the above table
-
-template <int N>
-static bool test_ranger_misc_jobid_persist_load_tmpl();
-
-template <int N>
-static void driver_register_all5(FunctionDriver &driver)
-{
-    driver.register_function(test_ranger_misc_jobid_persist_load_tmpl<N>);
-    driver_register_all5<N+1>(driver);
-}
-
-template <>
-void driver_register_all5<TEST_TABLE5_COUNT>(FunctionDriver &driver)
-{
-    (void) driver;
-}
 
 
 struct testcase6 {
@@ -353,26 +256,52 @@ const testcase6 test_table6[] = {
     {"1.10-1.20;1.30-1.40",    {1, 42},  false},
 };
 
-static const int TEST_TABLE6_COUNT = sizeof test_table6 / sizeof test_table6[0];
-
-template <int N>
-static bool test_ranger_misc_contains_jobid_tmpl();
-
-template <int N>
-static void driver_register_all6(FunctionDriver &driver)
-{
-    driver.register_function(test_ranger_misc_contains_jobid_tmpl<N>);
-    driver_register_all6<N+1>(driver);
-}
-
-template <>
-void driver_register_all6<TEST_TABLE6_COUNT>(FunctionDriver &driver)
-{
-    (void) driver;
-}
-
 
 //////////////////////////////////////////////
+
+// do some template magic to automatically register one
+// test function per test case in the above tables
+
+// one templated function gets generated for every test case, so we keep
+// each one very light weight as a wrapper around the main test function
+// for each table
+
+#define ARRAY_LEN(arr) (sizeof arr / sizeof arr[0])
+
+#define TEST_TABLE_SETUP(n, funcname)                                         \
+                                                                              \
+static const int TEST_TABLE##n##_COUNT = ARRAY_LEN(test_table##n);            \
+                                                                              \
+static bool funcname(int N);                                                  \
+                                                                              \
+template <int N>                                                              \
+static bool funcname##_tmpl() { return funcname(N); }                         \
+                                                                              \
+template <int N>                                                              \
+static void driver_register_all##n(FunctionDriver &driver)                    \
+{                                                                             \
+    driver.register_function(funcname##_tmpl<N>);                             \
+    driver_register_all##n<N+1>(driver);                                      \
+}                                                                             \
+                                                                              \
+template <>                                                                   \
+void driver_register_all##n<TEST_TABLE##n##_COUNT>(FunctionDriver &driver)    \
+{                                                                             \
+    (void) driver;                                                            \
+}                                                                             \
+                                                                              \
+
+TEST_TABLE_SETUP(1, test_ranger_misc_persist_load)
+TEST_TABLE_SETUP(2, test_ranger_misc_load_persist_slice)
+TEST_TABLE_SETUP(3, test_ranger_misc_contains)
+TEST_TABLE_SETUP(4, test_ranger_misc_element)
+TEST_TABLE_SETUP(5, test_ranger_misc_jobid_persist_load)
+TEST_TABLE_SETUP(6, test_ranger_misc_contains_jobid)
+
+//////////////////////////////////////////////
+
+
+// misc individual tests
 
 static bool test_ranger_initializer_list_elements();
 static bool test_ranger_initializer_list_ranges();
@@ -462,16 +391,6 @@ static bool test_ranger_misc_persist_load(int N)
 }
 
 
-// one of these templated functions gets generated for every test case, so we
-// keep it very light weight as a wrapper around the main test function above
-
-template <int N>
-static bool test_ranger_misc_persist_load_tmpl()
-{
-    return test_ranger_misc_persist_load(N);
-}
-
-
 //////////////////
 
 
@@ -523,12 +442,6 @@ static bool test_ranger_misc_load_persist_slice(int N)
 }
 
 
-template <int N>
-static bool test_ranger_misc_load_persist_slice_tmpl()
-{
-    return test_ranger_misc_load_persist_slice(N);
-}
-
 
 //////////////////
 
@@ -570,12 +483,6 @@ static bool test_ranger_misc_contains(int N)
     PASS;
 }
 
-
-template <int N>
-static bool test_ranger_misc_contains_tmpl()
-{
-    return test_ranger_misc_contains(N);
-}
 
 
 
@@ -642,15 +549,6 @@ static bool test_ranger_misc_element(int N)
     PASS;
 }
 
-
-// one of these templated functions gets generated for every test case, so we
-// keep it very light weight as a wrapper around the main test function above
-
-template <int N>
-static bool test_ranger_misc_element_tmpl()
-{
-    return test_ranger_misc_element(N);
-}
 
 
 //////////////////
@@ -742,15 +640,6 @@ static bool test_ranger_misc_jobid_persist_load(int N)
 }
 
 
-// one of these templated functions gets generated for every test case, so we
-// keep it very light weight as a wrapper around the main test function above
-
-template <int N>
-static bool test_ranger_misc_jobid_persist_load_tmpl()
-{
-    return test_ranger_misc_jobid_persist_load(N);
-}
-
 
 //////////////////
 
@@ -787,12 +676,6 @@ static bool test_ranger_misc_contains_jobid(int N)
     PASS;
 }
 
-
-template <int N>
-static bool test_ranger_misc_contains_jobid_tmpl()
-{
-    return test_ranger_misc_contains_jobid(N);
-}
 
 
 //////////////////
