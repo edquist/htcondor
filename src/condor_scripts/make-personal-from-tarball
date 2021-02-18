@@ -33,12 +33,12 @@ if [[ -e ${RELEASE_DIR}/condor.sh ]]; then
     exit 1
 fi
 
-mkdir -p ${LOCAL_DIR}
-mkdir -p ${LOCAL_DIR}/log
-mkdir -p ${LOCAL_DIR}/spool
-mkdir -p ${LOCAL_DIR}/execute
-mkdir -p ${LOCAL_CONFIG_DIR}
-mkdir -p ${RELEASE_DIR}/etc
+mkdir -p "${LOCAL_DIR}"
+mkdir -p "${LOCAL_DIR}/log"
+mkdir -p "${LOCAL_DIR}/spool"
+mkdir -p "${LOCAL_DIR}/execute"
+mkdir -p "${LOCAL_CONFIG_DIR}"
+mkdir -p "${RELEASE_DIR}/etc"
 
 if [[ ! -d ${LOCAL_DIR} ||
       ! -d ${LOCAL_DIR}/log ||
@@ -59,7 +59,7 @@ LOCAL_CONFIG_DIR=\$(LOCAL_DIR)/config.d
 LOCK=${LOCK}
 CONDOR_IDS=${CONDOR_IDS}
 EOF
-) > ${RELEASE_DIR}/etc/condor_config
+) > "${RELEASE_DIR}/etc/condor_config"
 
 #
 # Because user-based authentication includes the hostname as part of the
@@ -72,7 +72,7 @@ use security: user_based
 use role: personal
 CONDOR_HOST = \$(FULL_HOSTNAME)
 EOF
-) > ${LOCAL_CONFIG_DIR}/00-personal-condor
+) > "${LOCAL_CONFIG_DIR}/00-personal-condor"
 
 (
 cat <<EOF
@@ -89,4 +89,4 @@ else
 fi
 export PYTHONPATH
 EOF
-) > ${RELEASE_DIR}/condor.sh
+) > "${RELEASE_DIR}/condor.sh"
